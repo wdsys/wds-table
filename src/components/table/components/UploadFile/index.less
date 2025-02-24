@@ -1,0 +1,89 @@
+.upload-file-modal {
+  .ant-modal-body {
+    padding: 0;
+    min-height: 500px;
+    height: 60vh;
+
+    .resource-wrap {
+      height: 100%;
+      .resource-header {
+        padding: 3px 20px;
+        font-size: 14px;
+        border-bottom: 1px solid #f0f0f0;
+        .resource-bread {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .resource-wrap-box {
+        display: flex;
+        height: calc(100% - 30px);
+        .resource-list-tree {
+          width: 20%;
+          border-right: 1px solid #f0f0f0;
+          height: 100%;
+          padding: 5px 5px 0 0;
+        }
+        .resource-list-file {
+          height: 100%;
+          flex:1;
+          overflow: hidden;
+          .file-list-view-wrap {
+            // height: calc(100% - 40px);
+            width: 100%;
+            overflow-y: hidden;
+            overflow-x: auto;
+            .file-table-head {
+              display: flex;
+              border-bottom: 1px solid #ddd;
+              .table-head-item {
+                border-right: 1px solid #ddd;
+                padding: 2px 15px;
+                font-size: 14px;
+                &:last-child {
+                  border: none;
+                }
+              }
+            }
+          
+            .file-table-body {
+              max-height: calc(100% - 24px);
+              overflow: auto;
+          
+              .file-wrap-item{
+                display: flex;
+                cursor: pointer;
+                &:hover {
+                  background-color: #F4F9FF;
+                }
+                &_selected {
+                  background:#bae7ff!important; 
+                }
+                .table-file-td {
+                  padding: 2px 15px;
+                  font-size: 14px;
+                  display: flex;
+                  align-items: center;
+                  .anticon {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 5px;
+                    
+                  }
+                  &>svg {
+                    width: 16px!important;
+                    height: 16px!important;
+                    margin-right: 5px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      
+    }
+  }
+}

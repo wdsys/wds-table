@@ -1,0 +1,39 @@
+
+.splitter-box {
+  box-sizing: border-box;
+  display: block;
+  float: none;
+  line-height: 24px;
+  position: absolute;
+  z-index: 1;
+
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100%;
+  flex-grow: 0;
+  color: inherit;
+
+  .splitter {
+    box-sizing: border-box;
+    display: block;
+    float: none;
+    line-height: 24px;
+    position: static;
+    z-index: auto;
+
+    width: 5px;
+    height: 100%;
+    cursor: col-resize;
+    pointer-events: all;
+    margin-left: -3px;
+
+    &:hover {
+      background: #cf565a;
+    }
+
+    &.moving {
+      background: #cf565a;
+    }
+  }
+}

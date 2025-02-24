@@ -1,0 +1,38 @@
+.ctn {
+    width: 232px;
+    user-select: none;
+    .header {
+        color: #B3B3B3;
+        font-size: 12px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(22, 22, 22, 0.1);
+    }
+
+    .header:nth-of-type(1){
+        padding: 0;
+        border: none;
+    }
+
+    .colorCtn {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 4px;
+        .colorBlock {
+            width: 24px;
+            height: 24px;
+            margin: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-sizing: content-box;
+            font-size: 12px;
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 4px;
+            &:hover{
+                box-shadow: 0 0 0 6px #f0f0f0;
+            }
+        }
+    }
+}

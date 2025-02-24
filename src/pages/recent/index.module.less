@@ -1,0 +1,74 @@
+.ctn {
+    width: 100%;
+    height: 100%;
+
+    h2 {
+        margin-top: 0px;
+        font-size: 22px;
+        color: #0f0f0f;
+    }
+
+    .grid {
+        display: flex;
+        flex-direction: row;
+        gap: 16px 16px;
+        flex-wrap: wrap;
+
+        .item {
+            width: 150px;
+            height: 125px;
+            cursor: pointer;
+
+            .iconCtn, .bgCtn {
+                position: relative;
+                width: 150px;
+                height: 95px; 
+                text-align: center;
+                line-height: 95px;
+                border: 1px solid #dfe1e4;
+                border-radius: 16px;
+                line-height: 95px;
+                vertical-align: center;
+            }
+
+            .iconCtn::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 50px;
+                height: 2px;
+                background-color: #cccdce;
+                top: 46.5px;
+                left: 50px;
+            }
+
+            .iconCtn::after {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 2px;
+                height: 50px;
+                background-color: #cccdce;
+                top: 22.5px;
+                left: 73px;
+            }
+
+            .bgCtn img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .title {
+                text-align: center;
+                padding: 12px 0px;
+                font-size: 14px;
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: #0f0f0f;
+            }
+        }
+    }
+}

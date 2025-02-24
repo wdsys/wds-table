@@ -1,0 +1,96 @@
+.col-explain-modal {
+  .explain-info-wrap {
+    .explain-list {
+      max-height: 60vh;
+      overflow: auto;
+      padding-right: 10px;
+      /* 自定义滚动条轨道 */
+      &::-webkit-scrollbar {
+        width: 6px; /* 滚动条宽度 */
+      }
+
+      /* 自定义滚动条滑块 */
+      &::-webkit-scrollbar-thumb {
+        background-color: #888; /* 滑块背景颜色 */
+        border-radius: 5px;
+      }
+
+      /* 自定义滚动条轨道背景 */
+      &::-webkit-scrollbar-track {
+        background-color: #eee; /* 轨道背景颜色 */
+        border-radius: 5px;
+      }
+
+      .explain-item {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px dashed #ccc;
+        .ant-input-disabled {
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+.explain-file-wrap {
+  .explain-file-upload {
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    width: 200px;
+    .icon {
+      width: 50px;
+      height: 50px;
+    }
+    .hint-text {
+      font-size: 12px;
+      margin-left: 10px;
+      .line-1 {
+        letter-spacing: 2px;
+      }
+      .line-2 {
+        margin-top: 5px;
+        .action-name {
+          &.button {
+            color: #0285d5;
+            cursor: pointer;
+            box-shadow: 0px -1px 0px inset #0285d5;
+          }
+        }
+      }
+    }
+  }
+
+  .explain-file {
+    width: 95%;
+    height: auto;
+    position: relative;
+    .file-title{
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      .file-name {
+        max-width: 90%;
+        display: inline-block;
+        margin-right: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: noWrap;
+      }
+    }
+    
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      border: 1px solid #ccc;
+    }
+    // .file-toolbar {
+    //   position: absolute;
+    //   right: 20px;
+    //   top: 15px;
+    // }
+  }
+}
