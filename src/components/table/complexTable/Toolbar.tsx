@@ -6,6 +6,8 @@ import {
   Input,
 } from 'antd';
 
+import { useTranslation } from 'react-i18next';
+
 import { CellRendererContext } from './contexts';
 // import { MultiClientMutexTool } from './MultiClientMutexTool';
 import { DropdownButton } from './MyDropdown';
@@ -47,6 +49,7 @@ function TableNameEditor() {
 
 function CheckedRowCount() {
   const { rows, columns } = useContext(CellRendererContext);
+  const {t} = useTranslation();
 
   let count = 0;
 
@@ -66,9 +69,7 @@ function CheckedRowCount() {
 
   return (
     <div style={{ marginLeft: '54px', color: '#1890ff', fontWeight: 'bold' }}>
-      已选中
-      {count}
-      行
+      {t('selectedRows', {count})}
     </div>
   );
 }
@@ -80,6 +81,7 @@ function SaveEventDisplay() {
   // 2: 保存成功
   // 3: 保存失败
   const [state, setState] = useState(0);
+  const {t} = useTranslation();
 
   function onAutoSaveTableStart(e) {
     setState(1);
@@ -95,9 +97,9 @@ function SaveEventDisplay() {
 
   function renderState() {
     if (state === 2) {
-      return <span className="text success">保存成功</span>;
+      return <span className="text success">{t('save succcess')}</span>;
     } if (state === 3) {
-      return <span className="text failure">保存失败</span>;
+      return <span className="text failure">{t('save fail')}</span>;
     }
     return null;
   }
@@ -135,12 +137,13 @@ function TestButton() {
 }
 
 function ConfigButton() {
+  const {t} = useTranslation();
   return (
     <DropdownButton target="ConfigPanel" placement="bottom">
       <div className="table-tool-button">
         <a>
           <span className="icon"><icons.IconConfig /></span>
-          <span className="text">字段配置</span>
+          <span className="text">{t('field config')}</span>
         </a>
       </div>
     </DropdownButton>
@@ -149,6 +152,7 @@ function ConfigButton() {
 
 function FilterButton() {
   const ref = useRef(null);
+  const {t} = useTranslation();
 
   const { options, columns } = useContext(CellRendererContext);
 
@@ -178,7 +182,7 @@ function FilterButton() {
       <div className={`table-tool-button${classActive}`}>
         <a onClick={(e) => e.preventDefault()}>
           <span className="icon"><icons.IconFilter /></span>
-          <span className="text">过滤</span>
+          <span className="text">{t('filter')}</span>
         </a>
       </div>
     </DropdownButton>
@@ -191,6 +195,7 @@ function SortButton() {
   const {
     sortKeys = [],
   } = options.sorting || {};
+  const {t} = useTranslation();
 
   let classActive = '';
   if (sortKeys.length > 0) {
@@ -202,7 +207,7 @@ function SortButton() {
       <div className={`table-tool-button${classActive}`}>
         <a onClick={(e) => e.preventDefault()}>
           <span className="icon"><icons.IconSort /></span>
-          <span className="text">排序</span>
+          <span className="text">{t('sort')}</span>
         </a>
       </div>
     </DropdownButton>

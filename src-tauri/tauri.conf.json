@@ -19,6 +19,17 @@
         "minimizable": false,
         "maximizable": false,
         "dragDropEnabled": false
+      },
+      {
+        "label": "settings",
+        "title": "",
+        "width": 600,
+        "height": 500,
+        "resizable": false,
+        "minimizable": false,
+        "maximizable": false,
+        "visible": false,
+        "url": "/settings"
       }
     ],
     "security": {

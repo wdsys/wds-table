@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
+import { useTranslation } from 'react-i18next';
 import { getRecentFiles } from '@/utils/recentFiles';
 import type { RecentFile } from '@/utils/recentFiles';
 import { addRecentFile } from '@/utils/recentFiles';
@@ -13,6 +14,7 @@ import styles from './index.module.less';
 export default function Recent(){
 
     const [recentFiles, setRecentFiles] = useState<RecentFile[]>([]);
+    const {t} = useTranslation();
 
     async function loadRecentFiles() {
         const files = await getRecentFiles();
@@ -110,11 +112,11 @@ export default function Recent(){
 
     return (
         <div className={styles.ctn}>
-            <h2>最近</h2>
+            <h2>{t('recent')}</h2>
             <div className={styles.grid}>             
             <div className={styles.item} onClick={openNewFileInWindow}>
                 <div className={styles.iconCtn}></div>
-                <div className={styles.title}>新建表格</div>
+                <div className={styles.title}>{t('new table')}</div>
             </div>
 
             {

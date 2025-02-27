@@ -3,9 +3,11 @@ import { PiClock } from "react-icons/pi";
 import { VscNewFile } from "react-icons/vsc";
 import { LiaSwatchbookSolid } from "react-icons/lia";
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { TbSettings } from "react-icons/tb";
 import { selectFileByDialog } from '@/utils/file';
 import { generateWindowLabel } from '@/utils/index'
 import { addRecentFile } from '@/utils/recentFiles';
+import {useTranslation} from 'react-i18next';
 import logo from './wds.logo.svg'
 
 import styles from './index.module.less';
@@ -26,6 +28,8 @@ function FakeLink ({onClick, children, className}: FakeLinkProps){
 }
 
 export default function Home(){
+
+    const {t} = useTranslation()
 
     async function onOpenLocalFile(){
         const filePath = await selectFileByDialog(['table'], false);
@@ -65,30 +69,80 @@ export default function Home(){
         // mainWindow?.close();
     }
 
+    async function openSettings(){
+        const SETTINGS_LABEL = 'settings-window';
+        try {
+            // Try to get existing window
+            const existingWindow = await WebviewWindow.getByLabel(SETTINGS_LABEL);
+            
+            if (existingWindow) {
+                // Window exists, bring it to front and focus
+                await existingWindow.unminimize();
+                await existingWindow.setFocus();
+                return;
+            }
+    
+            // Create new window if it doesn't exist
+            const webview = new WebviewWindow(SETTINGS_LABEL, {
+                url: '/settings',
+                title: '',
+                width: 600,
+                height: 500,
+                resizable: false,
+                center: true,
+                decorations: true,
+                focus: true,
+                dragDropEnabled: false,
+                "minimizable": false,
+                "maximizable": false,
+            });
+    
+            webview.once('tauri://created', () => {
+                console.log('settings window created');
+            });
+    
+            webview.once('tauri://error', (e) => {
+                console.error('Error creating settings window:', e);
+            });
+    
+        } catch (error) {
+            console.error('Failed to open settings window:', error);
+        }
+    }
+
     return (
         <div className={styles.ctn}>
             <div className={styles.aside}>
-
-                <div className={styles.header}>
-                    <img src={logo} alt='logo' />
-                    <div>WDS-Table</div>
+                <div className={styles.topPart}>
+                    <div className={styles.header}>
+                        <img src={logo} alt='logo' />
+                        <div>WDS-Table</div>
+                    </div>
+                    <NavLink to='/home/recent' className={styles.item}>
+                        <span className={styles.icon}><PiClock size='22'/></span>
+                        <span>{t('recent')}</span>
+                    </NavLink>
+                    <FakeLink onClick={onOpenLocalFile} className={styles.item}>
+                        <>
+                            <span className={styles.icon}><VscNewFile size='22'/></span>
+                            <span>{t('open locale file')}</span>
+                        </>
+                    </FakeLink>
+                    <NavLink to='/home/template' className={styles.item}>
+                        <span className={styles.icon}><LiaSwatchbookSolid size='22'/></span>
+                        <span>{t('library')}</span>
+                    </NavLink>
+                    <hr />
                 </div>
 
-                <NavLink to='/home/recent' className={styles.item}>
-                    <span className={styles.icon}><PiClock size='22'/></span>
-                    <span>最近</span>
-                </NavLink>
-                <FakeLink onClick={onOpenLocalFile} className={styles.item}>
-                    <>
-                        <span className={styles.icon}><VscNewFile size='22'/></span>
-                        <span>打开本地文件</span>
-                    </>
-                </FakeLink>
-                <NavLink to='/home/template' className={styles.item}>
-                    <span className={styles.icon}><LiaSwatchbookSolid size='22'/></span>
-                    <span>表库</span>
-                </NavLink>
-                <hr />
+                <div className={styles.bottomPart}>
+                    <FakeLink onClick={openSettings} className={styles.item}>
+                        <>
+                            <span className={styles.icon}><TbSettings size='22'/></span>
+                            <span>{t('preferences')}</span>
+                        </>
+                    </FakeLink>
+                </div>
             </div>
 
             <div className={styles.content}>

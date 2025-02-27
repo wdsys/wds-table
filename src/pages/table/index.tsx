@@ -5,10 +5,17 @@ import Table from '@/components/table'
 import Toolbar from "@/components/table/toolbar";
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
+import enUS from "antd/es/calendar/locale/en_US";
 
 import styles from './index.module.less';
+import { useTranslation } from "react-i18next";
 
 export default function TablePage(){
+
+    const {i18n} = useTranslation();
+    const currentLanguage = i18n.language; // 获取当前语言
+
+    const locale = currentLanguage === 'enUS' ? enUS : zhCN;
 
     const [params] = useSearchParams();
     const path = params.get('file')
@@ -28,7 +35,7 @@ export default function TablePage(){
 
 
     return (
-        <ConfigProvider locale={zhCN}>
+        <ConfigProvider locale={locale}>
             <div className={styles.ctn}>
                 <div className={styles.toolbar}>
                     <Toolbar />

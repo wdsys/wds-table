@@ -42,6 +42,7 @@ import OverlayPanelBox from './OverlayPanelBox';
 // import CopyReqSheet from '../../components/CopyReqSheet';
 
 import { requirementStatus, currentCoorOrder } from '../DefaultData';
+import { useTranslation } from 'react-i18next';
 // import GlobalModalTree from '../../common/GlobalModalTree';
 // import ReleaseTemplate from '../../common/modal/releaseTemplate';
 
@@ -92,6 +93,8 @@ function MorePanel(props, ref) {
     tableUUID,
     tableInfo,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const userId = localStorage.getItem('userid');
 
@@ -630,7 +633,7 @@ function MorePanel(props, ref) {
                 <icons.IconCopy />
               </div>
               <div className="name">
-                查看JSON
+                {t('check json')}
               </div>
             </div>
           </div>
@@ -651,7 +654,7 @@ function MorePanel(props, ref) {
                       <icons.IconConfig />
                     </div>
                     <div className="name">
-                      字段配置...
+                      {t('field config')}...
                     </div>
                   </div>
                 </DropdownButton>
@@ -699,7 +702,7 @@ function MorePanel(props, ref) {
             <div className="one-column-box">
               <div className="one-column">
                 <div className="name">
-                  锁定全表
+                  {t('lock all table')}
                 </div>
                 <div className="visible">
                   <Switch
@@ -717,7 +720,7 @@ function MorePanel(props, ref) {
                 <div className="one-column-box">
                   <div className="one-column">
                     <div className="name">
-                      锁定表头
+                      {t('lock table head')}
                     </div>
                     <div className="visible">
                       <Switch
@@ -737,7 +740,7 @@ function MorePanel(props, ref) {
                 <div className="one-column-box">
                   <div className="one-column">
                     <div className="name">
-                      表头自动换行
+                      {t('table head wrap')}
                     </div>
                     <div className="visible">
                       <Switch
@@ -772,7 +775,7 @@ function MorePanel(props, ref) {
                 <div className="one-column-box">
                   <div className="one-column">
                     <div className="name">
-                      显示序号
+                      {t('show no')}
                     </div>
                     <div className="visible">
                       <Switch
@@ -792,7 +795,7 @@ function MorePanel(props, ref) {
                 <div className="one-column-box">
                   <div className="one-column">
                     <div className="name">
-                      显示编码
+                      {t('show code')}
                     </div>
                     <div className="visible">
                       <Switch
@@ -873,7 +876,7 @@ function MorePanel(props, ref) {
                           <icons.IconUpload />
                         </div>
                         <div className="name">
-                          导入数据表格
+                          {t('import table')}
                         </div>
                       </div>
                     </div>
@@ -891,7 +894,7 @@ function MorePanel(props, ref) {
                     <icons.IconDelete />
                   </div>
                   <div className="name">
-                    删除所有行
+                    {t('delete all rows')}
                   </div>
                 </div>
               </div>

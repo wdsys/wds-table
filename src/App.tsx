@@ -1,9 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import {useEffect} from 'react';
+import {listen} from '@tauri-apps/api/event';
 import Home from '@/pages/home';
 import Recent from  '@/pages/recent';
 import Table from '@/pages/table';
 import Template from '@/pages/template';
+import Setting from '@/pages/settings';
+import { useTranslation } from "react-i18next";
+import { getConfig } from "./utils";
+
+import '@/locale/i18n';
 
 import './App.css'
 
@@ -17,7 +23,29 @@ function preventDefaultContextMenu(e: ContextMenuEvent): void {
 
 function App() {
 
+  const {i18n} = useTranslation();
+
   useEffect(() => {
+    // 监听配置变更事件
+    const unlisten = listen('lang-changed', (event:any) => {
+      i18n.changeLanguage(event?.payload?.language)
+    });
+
+    return () => {
+      unlisten.then(fn => fn()); // 清理事件监听
+    };
+  }, []);
+
+  function initLanguage(){
+    getConfig().then(config=>{
+        i18n.changeLanguage(config.language)
+    })
+  }
+
+  useEffect(() => {
+
+    initLanguage();
+
     const preventDefault = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -28,7 +56,6 @@ function App() {
     document.addEventListener('dragover', preventDefault);
     document.addEventListener('dragleave', preventDefault);
     document.addEventListener('drop', preventDefault);
-
     window.addEventListener('contextmenu', preventDefaultContextMenu, false)
 
     return () => {
@@ -51,6 +78,7 @@ function App() {
         </Route>
 
         <Route path='table' element={<Table />} />
+        <Route path='/settings' element={<Setting />} />
       </Routes>
     </BrowserRouter>
   );

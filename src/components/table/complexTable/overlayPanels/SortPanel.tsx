@@ -25,6 +25,7 @@ import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 
 import { getSortableColumns, getFirstSortableColumn } from '../RowSorter';
+import { useTranslation } from 'react-i18next';
 
 function SortKey(props) {
   const {
@@ -156,7 +157,7 @@ function SortPanel(props, ref) {
     setOptions,
     columns,
   } = useContext(CellRendererContext);
-
+ const {t} = useTranslation();
   const {
     sortKeys = [],
   } = options.sorting || {};
@@ -266,7 +267,7 @@ function SortPanel(props, ref) {
       <div className="table-filter-overlay" style={{ width: 300 }}>
         <div className="card-title">
           <span style={{ marginRight: '5px' }}>
-            <span>当前视图排序设置</span>
+            <span>{t('current sort config')}</span>
           </span>
           <icons.IconHelp />
         </div>
@@ -296,7 +297,7 @@ function SortPanel(props, ref) {
                 <div className="one-condition-box">
                   <div className="one-condition">
                     <div className="name">
-                      <span style={{ color: '#8E8E8E' }}>未设置排序规则</span>
+                      <span style={{ color: '#8E8E8E' }}>{t('no sort rule')}</span>
                     </div>
                   </div>
                 </div>
@@ -313,7 +314,7 @@ function SortPanel(props, ref) {
                 <icons.IconPlus />
               </div>
               <div className="name">
-                新增排序规则
+               {t('new sort rule')}
               </div>
             </div>
             <div className="button" onClick={onClearSortKeys}>
@@ -321,7 +322,7 @@ function SortPanel(props, ref) {
                 <icons.IconDelete />
               </div>
               <div className="name">
-                清除排序规则
+                {t('clear sort rule')}
               </div>
             </div>
           </div>

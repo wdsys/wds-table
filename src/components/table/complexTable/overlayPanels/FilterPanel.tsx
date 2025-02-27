@@ -14,6 +14,8 @@ import {
   Select,
 } from 'antd';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   CellRendererContext,
 } from '../contexts';
@@ -779,6 +781,8 @@ function FilterConditionList(props) {
     onRemoveCondition,
   } = props;
 
+  const {t} = useTranslation();
+
   const validConditions = [];
 
   if (conditions?.length) {
@@ -803,7 +807,7 @@ function FilterConditionList(props) {
       <div className="one-condition-box">
         <div className="one-condition">
           <div className="name">
-            <span style={{ color: '#8E8E8E' }}>未设置过滤条件</span>
+            <span style={{ color: '#8E8E8E' }}>{t('no filters')}</span>
           </div>
         </div>
       </div>
@@ -833,6 +837,8 @@ function FilterPanel(props, ref) {
     setOptions,
     columns,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const {
     relation = 'any',
@@ -927,14 +933,14 @@ function FilterPanel(props, ref) {
       <div className="table-filter-overlay" style={{ width: 360 }}>
         <div className="card-title">
           <span style={{ marginRight: '5px' }}>
-            <span>筛选符合下方</span>
+            <span>{t('filter des part1')}</span>
             <span style={{ margin: '0 5px' }}>
               <Select value={relation} onChange={onChangeRelation}>
-                <Select.Option value="any">任一</Select.Option>
-                <Select.Option value="all">所有</Select.Option>
+                <Select.Option value="any">{t('any')}</Select.Option>
+                <Select.Option value="all">{t('every')}</Select.Option>
               </Select>
             </span>
-            <span>条件的数据</span>
+            <span>{t('filter des part2')}</span>
           </span>
           <icons.IconHelp />
         </div>
@@ -959,7 +965,7 @@ function FilterPanel(props, ref) {
                 <icons.IconPlus />
               </div>
               <div className="name">
-                新增过滤规则
+                {t('new rule')}
               </div>
             </div>
             <div className="button" onClick={onClickClearConditions}>
@@ -967,7 +973,7 @@ function FilterPanel(props, ref) {
                 <icons.IconDelete />
               </div>
               <div className="name">
-                清除过滤规则
+                {t('delete filter')}
               </div>
             </div>
           </div>

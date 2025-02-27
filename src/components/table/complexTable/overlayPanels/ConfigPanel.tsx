@@ -11,6 +11,8 @@ import {
   Divider,
 } from 'antd';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   CellRendererContext,
   LocalStateContext,
@@ -264,6 +266,8 @@ function ConfigPanel(props, ref) {
     setColumns,
   } = useContext(CellRendererContext);
 
+  const {t} = useTranslation();
+
   const [panelState, setPanelState] = useState({
     visible: false,
     placement: 'bottom',
@@ -373,7 +377,7 @@ function ConfigPanel(props, ref) {
     <OverlayPanelBox state={panelState} setState={setPanelState}>
       <div className="table-config-overlay">
         <div className="card-title">
-          <span style={{ marginRight: '5px' }}>当前视图字段设置</span>
+          <span style={{ marginRight: '5px' }}>{t('current config')}</span>
           {/* <icons.IconHelp /> */}
         </div>
         <Divider />
@@ -382,7 +386,7 @@ function ConfigPanel(props, ref) {
           <div className="one-column-box">
             <div className="one-column">
               <div className="name">
-                所有字段
+                {t('all fields')}
               </div>
 
               <div className="visible" onClick={onClickToggleAllVisibility}>
@@ -436,7 +440,7 @@ function ConfigPanel(props, ref) {
                     <icons.IconPlus />
                   </div>
                   <div className="name" onClick={onClickAddColumn}>
-                    新增字段
+                    {t('new field')}
                   </div>
                 </div>
               </div>

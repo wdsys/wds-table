@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useRef, useState, useEffect } from 'react';
 import { LeftOutlined, RightOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import {
   IconAddFolder,
   IconShouQi,
@@ -26,6 +27,7 @@ export default function Toolbar() {
   const scrollRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const {t} = useTranslation();
 
   const checkScroll = () => {
     const element = scrollRef.current;
@@ -113,32 +115,32 @@ export default function Toolbar() {
 
           <button type="button" className="toolbar-item" onClick={onClickMoveLeft}>
             <IconLeft />
-            <span>升级</span>
+            <span>{t('table level up')}</span>
           </button>
 
           <button type="button" className="toolbar-item" onClick={onClickMoveRight}>
             <IconRight />
-            <span>降级</span>
+            <span>{t('table level down')}</span>
           </button>
 
           <button type="button" className="toolbar-item" onClick={onClickSelectAll}>
             <IconChooseAllCol style={{ fontSize: '18px' }} />
-            <span>全选所有行</span>
+            <span>{t('select all rows')}</span>
           </button>
 
           <button type="button" className="toolbar-item" onClick={onClickCancelSelectRows}>
             <IconQuxiaoCol />
-            <span>取消选中行</span>
+            <span>{t('deselect')}</span>
           </button>
 
           <button type="button" className="toolbar-item" onClick={onClickCopyToClipboard}>
             <IconCopyCol />
-            <span>选中行复制</span>
+            <span>{t('copy selected')}</span>
           </button>
 
           <button type="button" className="toolbar-item" onClick={onClickDeleteSelected}>
             <IconDelCol />
-            <span>选中行删除</span>
+            <span>{t('delete selected')}</span>
           </button>
         </div>
       </div>

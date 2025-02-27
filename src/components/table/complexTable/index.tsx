@@ -51,6 +51,7 @@ import { DefaultData } from './DefaultData';
 import { DataTypes } from './dataType';
 
 import './ComplexTable.less';
+import { useTranslation } from 'react-i18next';
 
 //--------------------------------------------------------------------
 // table body
@@ -282,6 +283,7 @@ function renderVisibleColumns(columns, rows, options) {
 
 const LastTRMemo = React.memo((props) => {
   const { columns, setRows, options } = props;
+  const {t} = useTranslation();
   function onClick() {
     utils.appendNewRow(setRows, columns);
 
@@ -305,7 +307,7 @@ const LastTRMemo = React.memo((props) => {
       <div className="row-plus" style={{ width: totalWidth }} onClick={onClick}>
         <icons.IconPlus />
         {' '}
-        新增
+        {t('new row')}
       </div>
     </div>
   );

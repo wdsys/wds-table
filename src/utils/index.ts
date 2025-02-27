@@ -1,4 +1,5 @@
 import {open} from '@tauri-apps/plugin-shell'
+import {BaseDirectory, readTextFile} from '@tauri-apps/plugin-fs'
 import {v4 as uuidv4} from 'uuid'
 
 export function openUrlByBrowser(url: string){
@@ -37,4 +38,23 @@ export function generateDefaultTableData(){
             rows: []
           }
     )
+}
+
+const CONFIG_FILE = "config.json"
+
+const defaultConfig = {
+  appearance: "light",
+  language: "zhCN",
+  autoUpdate: "auto",
+}
+
+export async function getConfig(){
+    // 尝试读取配置文件
+    const configText = await readTextFile(CONFIG_FILE, { baseDir: BaseDirectory.AppConfig }).catch(() =>
+      JSON.stringify(defaultConfig),
+    )
+    // 解析配置
+    const loadedConfig = JSON.parse(configText)
+
+    return loadedConfig
 }
