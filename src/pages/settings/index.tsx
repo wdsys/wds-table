@@ -18,7 +18,7 @@ const CONFIG_FILE = "config.json"
 
 export default function SettingsForm() {
   const form = useRef<HTMLFormElement>(null)
-  const {t, i18n} = useTranslation()
+  const {t} = useTranslation()
 
   // 加载配置
   useEffect(() => {
@@ -62,15 +62,16 @@ export default function SettingsForm() {
         const encoder = new TextEncoder();
         const data = encoder.encode(JSON.stringify(values, null, 2));
       await writeFile(CONFIG_FILE, data, { baseDir: BaseDirectory.AppConfig })
-      closeWindow();
 
       const windows = await WebviewWindow.getAll();
       for (const window of windows) {
         if (window.label !== 'settings-window') {
+          console.log('emit', 'eeees')
           // 发送消息到其他窗口通知配置已更改
           await window.emit('lang-changed', values);
         }
       }
+      closeWindow();
     } catch (error) {
       console.error("保存配置失败:", error)
     }

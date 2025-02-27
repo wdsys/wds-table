@@ -5,7 +5,7 @@ import Table from '@/components/table'
 import Toolbar from "@/components/table/toolbar";
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import enUS from "antd/es/calendar/locale/en_US";
+import enUS from "antd/locale/en_US";
 
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
