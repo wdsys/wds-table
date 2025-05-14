@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useRef, useState, useEffect } from 'react';
-import { LeftOutlined, RightOutlined, FullscreenOutlined } from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, FullscreenOutlined, OrderedListOutlined, } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import {
   IconAddFolder,
@@ -95,6 +95,13 @@ export default function Toolbar() {
     window.dispatchEvent(event);
   }
 
+  function onClickSerialRows() {
+    const event = new CustomEvent('addSerialNumber', {
+      detail: { reNumber: true },
+    });
+    window.dispatchEvent(event);
+  }
+
   return (
     <div className="toolbar-wrapper">
       {showLeftArrow && (
@@ -141,6 +148,11 @@ export default function Toolbar() {
           <button type="button" className="toolbar-item" onClick={onClickDeleteSelected}>
             <IconDelCol />
             <span>{t('delete selected')}</span>
+          </button>
+
+          <button type="button" className="toolbar-item" onClick={onClickSerialRows}>
+            <OrderedListOutlined style={{ fontSize: '18px' }} />
+            <span>{t('coding item')}</span>
           </button>
         </div>
       </div>

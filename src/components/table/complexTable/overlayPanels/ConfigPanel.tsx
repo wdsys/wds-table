@@ -182,14 +182,14 @@ function ColumnListItem(props) {
             : <icons.IconVisible />}
         </div>
 
-        <div
+        {/* <div
           className="visible"
           onClick={onClickToggleLocked}
         >
           {itemData.locked
             ? <icons.IconLocked />
             : <icons.IconUnlocked />}
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -404,7 +404,7 @@ function ConfigPanel(props, ref) {
                 </Tooltip>
               </div>
 
-              <div className="visible" onClick={onClickToggleAllLocked}>
+              {/* <div className="visible" onClick={onClickToggleAllLocked}>
                 <Tooltip
                   title={<span style={{ fontSize: '12px', fontWeight: 'bold' }}>锁定所有列</span>}
                   color="#333"
@@ -417,7 +417,7 @@ function ConfigPanel(props, ref) {
                       ? <icons.IconLocked /> : <icons.IconUnlocked />}
                   </span>
                 </Tooltip>
-              </div>
+              </div> */}
             </div>
           </div>
 

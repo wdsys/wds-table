@@ -52,68 +52,68 @@ export const base64ToBlob = (base64Data: string, defaultMimeType: string = 'appl
     return new Blob([byteArray], { type: mimeType });
 };
 
-export async function saveBlobToFile(filename: string, blob: Blob, defaultPath?: string) {
-    try {
-        // 获取文件扩展名
-        const extension = filename.split('.').pop() || '*';
+// export async function saveBlobToFile(filename: string, blob: Blob, defaultPath?: string) {
+//     try {
+//         // 获取文件扩展名
+//         const extension = filename.split('.').pop() || '*';
         
-        // 从 blob 的 type 获取 MIME 类型名称
-        const mimeTypeName = blob.type.split('/').pop()?.toUpperCase() || 'All Files';
+//         // 从 blob 的 type 获取 MIME 类型名称
+//         const mimeTypeName = blob.type.split('/').pop()?.toUpperCase() || 'All Files';
         
-        // 构建完整的默认保存路径
-        const fullDefaultPath = defaultPath 
-            ? `${defaultPath}/${filename}`
-            : filename;
+//         // 构建完整的默认保存路径
+//         const fullDefaultPath = defaultPath 
+//             ? `${defaultPath}/${filename}`
+//             : filename;
 
-        // 打开保存对话框让用户选择保存位置
-        const filePath = await save({
-            defaultPath: fullDefaultPath,
-            filters: [{
-                name: `${mimeTypeName} Files`,
-                extensions: [extension]
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }]
-        });
+//         // 打开保存对话框让用户选择保存位置
+//         const filePath = await save({
+//             defaultPath: fullDefaultPath,
+//             filters: [{
+//                 name: `${mimeTypeName} Files`,
+//                 extensions: [extension]
+//             },
+//             {
+//                 name: 'All Files',
+//                 extensions: ['*']
+//             }]
+//         });
 
-        if (!filePath) return; // 用户取消了保存
+//         if (!filePath) return; // 用户取消了保存
 
-        // 将 Blob 转换为 Uint8Array
-        const arrayBuffer = await blob.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
+//         // 将 Blob 转换为 Uint8Array
+//         const arrayBuffer = await blob.arrayBuffer();
+//         const uint8Array = new Uint8Array(arrayBuffer);
 
-        // 写入文件
-        await writeFile(filePath, uint8Array);
+//         // 写入文件
+//         await writeFile(filePath, uint8Array);
 
-        return filePath;
-    } catch (error) {
-        console.error('Failed to save file:', error);
-        throw error;
-    }
-}
+//         return filePath;
+//     } catch (error) {
+//         console.error('Failed to save file:', error);
+//         throw error;
+//     }
+// }
 
-export async function openBase64WithDefaultApp(base64: string, filename: string) {
+export async function openFilePathWithDefaultApp(filePath: string) {
     try {
         // 转换base64为Blob
-        const blob = base64ToBlob(base64);
+        // const blob = base64ToBlob(base64);
         
-        // 获取系统临时目录
-        const tempdir = await tempDir();
+        // // 获取系统临时目录
+        // const tempdir = await tempDir();
         
-        // 创建临时文件路径
-        const tempPath = await join(tempdir, filename);
+        // // 创建临时文件路径
+        // const tempPath = await join(tempdir, filename);
         
-        // 将blob转换为Uint8Array并写入临时文件
-        const arrayBuffer = await blob.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        await writeFile(tempPath, uint8Array);
+        // // 将blob转换为Uint8Array并写入临时文件
+        // const arrayBuffer = await blob.arrayBuffer();
+        // const uint8Array = new Uint8Array(arrayBuffer);
+        // await writeFile(tempPath, uint8Array);
         
         // 使用系统默认程序打开文件
-        await shellOpen(tempPath);
+        await shellOpen(filePath);
         
-        return tempPath;
+        return filePath;
     } catch (error) {
         console.error('Failed to open file:', error);
         throw error;
@@ -135,3 +135,30 @@ export async function writeContentToFile(path: string, jsonString: string) {
         throw error;
     }
 }
+
+export async function saveBlobToFile(filename: string, blob: Blob): Promise<string | null> {
+    try {
+      // Open save dialog
+      const filePath = await save({
+        defaultPath: filename,
+        filters: [{
+          name: 'All Files',
+          extensions: ['*']
+        }]
+      });
+  
+      if (!filePath) return null; // User cancelled
+  
+      // Convert blob to Uint8Array
+      const arrayBuffer = await blob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+  
+      // Write file
+      await writeFile(filePath, uint8Array);
+      
+      return filePath;
+    } catch (error) {
+      console.error('Failed to save file:', error);
+      throw error;
+    }
+  }

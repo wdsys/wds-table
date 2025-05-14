@@ -1,0 +1,52 @@
+.overlay-aiTextResponse {
+  overflow: hidden;
+  width: 500px;
+  background-color: #fff;
+  padding-top: 20px;
+  border: 1px solid #ccc;
+  border-radius:10px;
+  position: relative;
+  .overlay-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: none;
+  }
+
+  .aiTextResponse-title {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0 20px;
+  }
+
+  .aiTextResponse-search {
+    margin: 10px 20px;
+    width: calc(100% - 40px);
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+
+  .overlay-loading {
+    padding: 20px;
+  }
+
+  .aiTextResponse-content {
+    padding: 0 20px;
+    max-height: 30vh;
+    overflow: auto;
+    white-space: pre-wrap;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+
+  .overlay-footer {
+    padding: 20px 10px 10px;
+    display: flex;
+    justify-content: flex-end;
+    .ant-btn {
+      margin-left: 15px;
+    }
+  }
+}

@@ -5,11 +5,11 @@ export const DefaultData = {
     lockTableHead: false,
     lockFullTable: false,
     lineWrap: true,
-    rowIndex: false,
+    rowIndex: true,
   },
   columns: [
     {
-      name: '树节点',
+      name: '标题',
       dataType: 'treeNode',
       width: 150,
     },

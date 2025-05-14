@@ -473,31 +473,34 @@ function renderOneColumn(props) {
     col,
     isFirstColumn,
     rows,
+    currentPageRowUUIDs,
   } = props;
 
   const tdList = [];
 
   for (let i = 0; i < rows.length; i += 1) {
-    const key = `${i}-${colIndex}`;
-    const row = rows[i];
-    const cellValue = row?.fields?.[col?.uuid];
-    const cellStyle = row?.styles?.[col?.uuid] || {};
-
-    const props1 = {
-      colUUID: col.uuid,
-      rowUUID: row.uuid,
-      onPage: pageRowUUIDs.has(row.uuid),
-      dataType: col.dataType,
-      isFirstColumn,
-      width: col.width,
-      readOnly,
-      locked: lockFullTable || col.locked || row.locked,
-      value: cellValue,
-      style: cellStyle,
-    };
-
-    const td = <TreeNodeCell key={key} {...props1} />;
-    tdList.push(td);
+    if(currentPageRowUUIDs.has(rows[i].uuid)){
+      const key = `${i}-${colIndex}`;
+      const row = rows[i];
+      const cellValue = row?.fields?.[col?.uuid];
+      const cellStyle = row?.styles?.[col?.uuid] || {};
+  
+      const props1 = {
+        colUUID: col.uuid,
+        rowUUID: row.uuid,
+        onPage: pageRowUUIDs.has(row.uuid),
+        dataType: col.dataType,
+        isFirstColumn,
+        width: col.width,
+        readOnly,
+        locked: lockFullTable || col.locked || row.locked,
+        value: cellValue,
+        style: cellStyle,
+      };
+  
+      const td = <TreeNodeCell key={key} {...props1} />;
+      tdList.push(td);
+    }
   }
 
   return tdList;
@@ -505,7 +508,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'treeNode',
-  nameCN: '树节点',
+  nameCN: '标题',
   icon: IconTreeNode,
   valueToClipboardString,
   valueFromClipboardString,

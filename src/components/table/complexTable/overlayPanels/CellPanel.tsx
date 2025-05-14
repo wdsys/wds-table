@@ -1348,6 +1348,37 @@ function CellPanel(props, ref) {
     });
   }
 
+  function onClickOpenAIText(e) {
+    const elem = e.target.closest('.one-button');
+    if (!elem) {
+      return;
+    }
+
+    const rect = elem.getBoundingClientRect();
+    const position = {
+      left: rect.left + 10,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    const panelType = 'AiTextPanel';
+    const detail = {
+      panelType,
+      action: 'toggle',
+      placement: 'right',
+      position,
+      currentValue,
+      colUUID,
+      rowUUID,
+      isTreeNodeCell,
+      cellElem: panelState.cellElem,
+    };
+
+    const ev = new CustomEvent('notifyPanel', { detail });
+    window.dispatchEvent(ev);
+  }
+
   const buttonList = [];
 
   if (!bodyLocked
@@ -1573,6 +1604,31 @@ function CellPanel(props, ref) {
 
     buttonList.push(btn);
   }
+
+  // if (!bodyLocked && (['text', 'treeNode'].includes(currentColumn?.dataType))) {
+  //   const btn = (
+  //     <div
+  //       key="btn-paint-cell-color"
+  //       className="one-button"
+  //       onClick={onClickOpenAIText}
+  //     >
+  //       <div className="icon">
+  //         <icons.IconAi />
+  //       </div>
+  //       <div className="name">
+  //         <div style={{
+  //           width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  //         }}
+  //         >
+  //           <span>AI助手</span>
+  //           <RightOutlined style={{ float: 'right', marginTop: '2px' }} />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
+  //   buttonList.unshift(btn);
+  // }
 
   if (!buttonList.length) {
     const btn = (

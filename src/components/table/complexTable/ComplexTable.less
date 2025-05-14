@@ -32,7 +32,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 42px;
+  top: 46px;
   bottom: 0;
 }
 
@@ -333,6 +333,31 @@
       border-left: 1px solid #ccc;
     }
 
+    .td.selected {
+      // border: 1px solid rgba(255, 71, 71, 1);
+      background-color: #d9d9d9!important;
+    }
+
+    .td.topBoundary {
+      border-top: 1px solid rgba(255, 71, 71, 1);
+    }
+
+    .td.bottomBoundary {
+      border-bottom: 1px solid rgba(255, 71, 71, 1);
+    }
+
+    .td.leftBoundary {
+      border-left: 1px solid rgba(255, 71, 71, 1);
+    }
+
+    .td.rightBoundary {
+      border-right: 1px solid rgba(255, 71, 71, 1);
+    }
+
+    .td.selected.topBoundary.leftBoundary {
+      background-color: white!important;
+    }
+
     .row-plus {
       display: flex;
       flex-direction: row;
@@ -378,6 +403,7 @@
   left: 10px;
   bottom: 15px;
   background: white;
+  display: flex;
 }
 
 .table-toolbar {

@@ -8,6 +8,8 @@ import Template from '@/pages/template';
 import Setting from '@/pages/settings';
 import { useTranslation } from "react-i18next";
 import { getConfig } from "./utils";
+import withTitleBar from '@/components/withTitleBar';
+import withTitleBar2 from "@/components/withTitleBar2";
 
 import '@/locale/i18n';
 
@@ -20,6 +22,9 @@ interface ContextMenuEvent extends MouseEvent {
 function preventDefaultContextMenu(e: ContextMenuEvent): void {
   e.preventDefault();
 }
+
+const HomeWithTitleBar = withTitleBar(Home)
+const TableWithTitleBar = withTitleBar2(Table)
 
 function App() {
 
@@ -72,12 +77,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Navigate to='/home/recent'/>}></Route>
-        <Route path='home' element={<Home />}>
+        <Route path='home' element={<HomeWithTitleBar />}>
           <Route path='recent' element={<Recent/>} />
           <Route path='template' element={<Template />} />
         </Route>
 
-        <Route path='table' element={<Table />} />
+        <Route path='table' element={<TableWithTitleBar />} />
         <Route path='/settings' element={<Setting />} />
       </Routes>
     </BrowserRouter>

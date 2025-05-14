@@ -27,7 +27,7 @@ import * as utils from '../utils';
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 
-import { base64ToBlob, saveBlobToFile, openBase64WithDefaultApp } from '@/utils/file'
+import { base64ToBlob, saveBlobToFile, openFilePathWithDefaultApp } from '@/utils/file'
 
 function ModalTitle({ name, preId }) {
   function toggleWrap() {
@@ -70,6 +70,7 @@ function FileOperationPanel(props, ref) {
     tableUUID,
     getAttachment,
     deleteAttachment,
+    tableManager,
   } = useContext(CellRendererContext);
 
   const [panelState, setPanelState] = useState({
@@ -171,31 +172,50 @@ function FileOperationPanel(props, ref) {
   }
 
   async function onClickDownload() {
-    let blob;
-    if (file.source === 'resource') {
-      blob = await getResourceAttachment(projectId, file.fileUrl);
-    } else {
-      blob = await getAttachment(projectId, file.digest);
+    // let blob;
+    // if (file.source === 'resource') {
+    //   blob = await getResourceAttachment(projectId, file.fileUrl);
+    // } else {
+    //   blob = await getAttachment(projectId, file.digest);
+    // }
+
+    // const base64String = getAttachment(file.uuid);
+    // if(base64String){
+    //   blob = base64ToBlob(base64String)
+    // }
+
+    // if (!blob) {
+    //   return;
+    // }
+
+    // // eslint-disable-next-line consistent-return
+    // // getAttachment(projectId, file.digest, tableUUID).then(async (blob) => {
+
+    // // utils.downloadFile(blob, file.name);
+    // // });
+
+    // await saveBlobToFile(file.name, blob)
+
+    // closePanel();
+
+    try {
+      // Get file blob from temp directory
+      const blob = await tableManager.getAttachmentBlob(`${file.uuid}-${file.name}`);
+      
+      if (!blob) {
+        message.error('Failed to download file');
+        return;
+      }
+  
+      // Save the blob to user selected location
+      await saveBlobToFile(file.name, blob);
+      
+      message.success('File downloaded successfully');
+      closePanel();
+    } catch (error) {
+      console.error('Download failed:', error);
+      message.error('Failed to download file');
     }
-
-    const base64String = getAttachment(file.uuid);
-    if(base64String){
-      blob = base64ToBlob(base64String)
-    }
-
-    if (!blob) {
-      return;
-    }
-
-    // eslint-disable-next-line consistent-return
-    // getAttachment(projectId, file.digest, tableUUID).then(async (blob) => {
-
-    // utils.downloadFile(blob, file.name);
-    // });
-
-    await saveBlobToFile(file.name, blob)
-
-    closePanel();
   }
 
   function getOnlinePreviewType(filename) {
@@ -258,13 +278,13 @@ function FileOperationPanel(props, ref) {
     const { name } = file;
     if (!name) return;
 
-      const base64String = getAttachment(file.uuid);
+      const path = await tableManager.getAttachmentPath(`${file.uuid}-${file.name}`);
 
 
-      if (!base64String) {
+      if (!path) {
         return;
       }
-      await openBase64WithDefaultApp(base64String, file.name)
+      await openFilePathWithDefaultApp(path)
       closePanel();
   }
   function onClickViewImage() {

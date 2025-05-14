@@ -335,31 +335,35 @@ function renderOneColumn(props) {
     isFirstColumn,
     rows,
     columns = [],
+    currentPageRowUUIDs,
   } = props;
   const tdList = [];
 
   const treeNodeUUID = columns?.find?.((c) => c.dataType === 'treeNode')?.uuid;
 
   for (let i = 0; i < rows.length; i += 1) {
-    const key = `${i}-${colIndex}`;
-    const row = rows[i];
-    const cellStyle = row?.styles?.[col?.uuid] || {};
-    const treeNodeValue = row.fields?.[treeNodeUUID]?.text;
 
-    const props1 = {
-      colUUID: col.uuid,
-      rowUUID: row.uuid,
-      onPage: pageRowUUIDs.has(row.uuid),
-      dataType: col.dataType,
-      expandFormat: col.expandFormat,
-      isFirstColumn,
-      width: col.width,
-      locked: readOnly || lockFullTable || col.locked || row.locked,
-      style: cellStyle,
-      treeNodeValue,
-    };
-    const td = <LinkedRequirementsCell key={key} {...props1} />;
-    tdList.push(td);
+    if(currentPageRowUUIDs.has(rows[i].uuid)){
+      const key = `${i}-${colIndex}`;
+      const row = rows[i];
+      const cellStyle = row?.styles?.[col?.uuid] || {};
+      const treeNodeValue = row.fields?.[treeNodeUUID]?.text;
+  
+      const props1 = {
+        colUUID: col.uuid,
+        rowUUID: row.uuid,
+        onPage: pageRowUUIDs.has(row.uuid),
+        dataType: col.dataType,
+        expandFormat: col.expandFormat,
+        isFirstColumn,
+        width: col.width,
+        locked: readOnly || lockFullTable || col.locked || row.locked,
+        style: cellStyle,
+        treeNodeValue,
+      };
+      const td = <LinkedRequirementsCell key={key} {...props1} />;
+      tdList.push(td);
+    }
   }
 
   return tdList;

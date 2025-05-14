@@ -18,6 +18,7 @@ const en = {
     "table level up": "TreeNode Level Increase",
     "table level down": "TreeNode Level Decrease",
     "select all rows": "Select All Rows",
+    "coding item": "Coding Item",
     "deselect": "Deselect",
     "copy selected": "Copy Selected Rows",
     "delete selected": "Delete Selected Rows",

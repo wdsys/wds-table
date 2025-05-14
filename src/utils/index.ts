@@ -1,6 +1,7 @@
 import {open} from '@tauri-apps/plugin-shell'
-import {BaseDirectory, readTextFile} from '@tauri-apps/plugin-fs'
+import {BaseDirectory, readTextFile, writeFile} from '@tauri-apps/plugin-fs'
 import {v4 as uuidv4} from 'uuid'
+import JSZip from 'jszip';
 
 export function openUrlByBrowser(url: string){
     open(url)
@@ -29,7 +30,7 @@ export function generateDefaultTableData(){
             },
             columns: [
               {
-                name: '树节点',
+                name: '标题',
                 dataType: 'treeNode',
                 width: 150,
                 uuid: uuidv4()
@@ -57,4 +58,32 @@ export async function getConfig(){
     const loadedConfig = JSON.parse(configText)
 
     return loadedConfig
+}
+
+export async function createInitialTableFile(filePath: string) {
+    try {
+        const zip = new JSZip();
+        
+        // Add initial data.json with default table structure
+        const initialContent = generateDefaultTableData();
+        zip.file('data.json', JSON.stringify(initialContent, null, 2));
+        
+        // Create empty attachments folder
+        zip.folder('attachments');
+        
+        // Generate zip file
+        const content = await zip.generateAsync({
+            type: 'uint8array',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 9 }
+        });
+        
+        // Write to file
+        await writeFile(filePath, content);
+        
+        return true;
+    } catch (error) {
+        console.error('Failed to create table file:', error);
+        throw error;
+    }
 }

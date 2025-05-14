@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router";
 import {getFileContent} from '@/utils/file'
 import Table from '@/components/table'
 import Toolbar from "@/components/table/toolbar";
 import { ConfigProvider } from 'antd';
+import { TfiMenu } from "react-icons/tfi";
 import zhCN from 'antd/locale/zh_CN';
 import enUS from "antd/locale/en_US";
 
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
+
+import { TableManager } from '@/utils/tableManager';
 
 export default function TablePage(){
 
@@ -20,11 +23,31 @@ export default function TablePage(){
     const [params] = useSearchParams();
     const path = params.get('file')
     const [data, setData] = useState()
+    const tableManager = useRef(new TableManager());
     const filename = path?.split?.('\\')?.pop()
 
-    async function getTableJson(p:string){
-        const json = await getFileContent(p)
-        setData(JSON.parse(json))
+    async function getTableJson(p: string) {
+        try {
+            // Create new session and extract zip
+            await tableManager.current.createSession(p);
+            await tableManager.current.extractZipToSession(p);
+            
+            // Load table data
+            const tableData = await tableManager.current.getTableData();
+            setData(tableData);
+        } catch (error) {
+            console.error('Failed to load table:', error);
+        }
+    }
+
+    
+    async function handleSave(data:any) {
+        await tableManager.current.updateTableData(data)
+        try {
+            await tableManager.current.saveSessionToZip();
+        } catch (error) {
+            console.error('Failed to save table:', error);
+        }
     }
     
     useEffect(()=>{
@@ -37,11 +60,16 @@ export default function TablePage(){
     return (
         <ConfigProvider locale={locale}>
             <div className={styles.ctn}>
-                <div className={styles.toolbar}>
+                {/* <div className={styles.toolbar}>
                     <Toolbar />
-                </div>
+                </div> */}
+                <div className={styles.menu}><TfiMenu/></div>
+                <div className={styles.title}>{filename}</div>
                 <div className={styles.tableCtn}>
-                    <Table fileData={data} filename={filename} filePath={path} />
+                    <Table fileData={data} filename={filename} 
+                    filePath={path} handleSave={handleSave}
+                    tableManager={tableManager.current}
+                    />
                 </div>
             </div>
         </ConfigProvider>

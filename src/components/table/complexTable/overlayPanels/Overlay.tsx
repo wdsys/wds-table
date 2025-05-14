@@ -30,6 +30,11 @@ import SignFormatPanel from './SignFormatPanel';
 import ColExplainPanel from './ColExplainPanel';
 import ExpandFormatPanel from './ExpandFormatPanel';
 import EditSerialNumberPanel from './EditSerialNumber';
+import CheckboxSelectRowsPanel from './CheckboxSelectRowsPanel';
+import AiTextPanel from './AiTextPanel';
+import AiTextResponsePanel from './AiTextResponsePanel';
+import PatchActionsPanel from './PatchActionsPanel';
+import LevelChangePanel from './LevelChangePanel'
 
 import './Overlay.less';
 
@@ -60,6 +65,11 @@ const PanelTypes = [
   'ColExplainPanel',
   'ExpandFormatPanel',
   'EditSerialNumberPanel',
+  'CheckboxSelectRowsPanel',
+  'AiTextPanel',
+  'AiTextResponsePanel',
+  'PatchActionsPanel',
+  'LevelChangePanel',
 ];
 
 function Overlay() {
@@ -137,6 +147,17 @@ function Overlay() {
         <ExpandFormatPanel ref={panelRefs.ExpandFormatPanel} />
 
         <EditSerialNumberPanel ref={panelRefs.EditSerialNumberPanel} />
+
+        <CheckboxSelectRowsPanel ref={panelRefs.CheckboxSelectRowsPanel} />
+
+        <AiTextPanel ref={panelRefs.AiTextPanel} />
+
+        <AiTextResponsePanel ref={panelRefs.AiTextResponsePanel} />
+
+        <PatchActionsPanel ref={panelRefs.PatchActionsPanel} />
+
+        <LevelChangePanel ref={panelRefs.LevelChangePanel} />
+        
         {
           Object.keys(panels).map((id) => <div key={id} id={`panel-${id}`}>{panels[id]}</div>)
         }

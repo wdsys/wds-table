@@ -60,7 +60,6 @@ function ImageInCell(props) {
     getAttachment,
     getResourceAttachment,
     onClickImage,
-    projectId,
     name,
     ...file
   } = props;
@@ -78,31 +77,33 @@ function ImageInCell(props) {
 
   async function loadImage() {
     let blob;
-    let img;
+    // let img;
 
-    try {
-      if (file.source === 'resource') {
-        blob = await getResourceAttachment(projectId, file.fileUrl);
-      } else {
-        blob = await getAttachment(projectId, file.digest);
-      }
-    } catch (err) {
-      console.error(`cannot load attachment image: name="${name}", digest="${file.digest}"`, err);
-      return;
-    }
+    // try {
+    //   if (file.source === 'resource') {
+    //     blob = await getResourceAttachment(file.fileUrl);
+    //   } else {
+    //     blob = await getAttachment(file.digest);
+    //   }
+    // } catch (err) {
+    //   console.error(`cannot load attachment image: name="${name}", digest="${file.digest}"`, err);
+    //   return;
+    // }
 
-    const isSVG = name?.endsWith('.svg');
-    if (isSVG) {
-      blob = new Blob([blob], { type: 'image/svg+xml' });
-    }
+    // const isSVG = name?.endsWith('.svg');
+    // if (isSVG) {
+    //   blob = new Blob([blob], { type: 'image/svg+xml' });
+    // }
 
-    try {
-      img = await utils.blob2img(blob);
-    } catch (err) {
-      console.error(`cannot convert blob to image: name="${name}", digest="${file.digest}"`, err);
-      return;
-    }
+    // try {
+    //   img = await utils.blob2img(blob);
+    // } catch (err) {
+    //   console.error(`cannot convert blob to image: name="${name}", digest="${file.digest}"`, err);
+    //   return;
+    // }
 
+    const img = new Image();
+    img.src = await getAttachment(`${file.uuid}-${name}`);
     img.onclick = onClick;
 
     const div = ref.current;
@@ -126,7 +127,6 @@ function ImageInCell(props) {
 
 function VideoInCell(props) {
   const {
-    projectId,
     getAPIBaseURL,
     onClickVideo,
     ...file
@@ -141,7 +141,7 @@ function VideoInCell(props) {
 
   const baseURL = getAPIBaseURL();
   const selector = `at.${digest}`;
-  const thumbnailURL = `${baseURL}/projects/${projectId}/videos/${selector}/files/thumbnail.jpg`;
+  const thumbnailURL = `${baseURL}/projects//videos/${selector}/files/thumbnail.jpg`;
 
   const onClick = (e) => {
     e.preventDefault();
@@ -203,13 +203,12 @@ function FileCellContent(props) {
 
   const {
     getAPIBaseURL,
-    getAttachment,
     getResourceAttachment,
   } = useContext(InterfaceFunctionContext);
 
   const {
-    projectId,
-  } = useContext(CellRendererContext);
+    getAttachment
+  } = useContext(CellRendererContext)
 
   function onClick(e) {
     const elem = e.target.closest('.cell-view-file');
@@ -252,7 +251,6 @@ function FileCellContent(props) {
   function onClickVideo(file) {
     const detail = {
       action: 'showVideoCinema',
-      projectId,
       file,
     };
 
@@ -266,7 +264,6 @@ function FileCellContent(props) {
         <div className="image-box">
           <ImageInCell
             {...file}
-            projectId={projectId}
             getAttachment={getAttachment}
             getResourceAttachment={getResourceAttachment}
             onClickImage={onClickImage}
@@ -278,7 +275,6 @@ function FileCellContent(props) {
         <div className="video-box">
           <VideoInCell
             {...file}
-            projectId={projectId}
             getAttachment={getAttachment}
             getAPIBaseURL={getAPIBaseURL}
             onClickVideo={onClickVideo}
@@ -377,30 +373,33 @@ function renderOneColumn(props) {
     col,
     isFirstColumn,
     rows,
+    currentPageRowUUIDs,
   } = props;
 
   const tdList = [];
 
   for (let i = 0; i < rows.length; i += 1) {
-    const key = `${i}-${colIndex}`;
-    const row = rows[i];
-    const cellValue = row?.fields?.[col?.uuid];
-    const cellStyle = row?.styles?.[col?.uuid] || {};
-
-    const props1 = {
-      colUUID: col.uuid,
-      rowUUID: row.uuid,
-      onPage: pageRowUUIDs.has(row.uuid),
-      dataType: col.dataType,
-      isFirstColumn,
-      width: col.width,
-      value: cellValue,
-      style: cellStyle,
-      expandFormat: col.expandFormat,
-    };
-
-    const td = <FileCell key={key} {...props1} />;
-    tdList.push(td);
+    if(currentPageRowUUIDs.has(rows[i].uuid)){
+      const key = `${i}-${colIndex}`;
+      const row = rows[i];
+      const cellValue = row?.fields?.[col?.uuid];
+      const cellStyle = row?.styles?.[col?.uuid] || {};
+  
+      const props1 = {
+        colUUID: col.uuid,
+        rowUUID: row.uuid,
+        onPage: pageRowUUIDs.has(row.uuid),
+        dataType: col.dataType,
+        isFirstColumn,
+        width: col.width,
+        value: cellValue,
+        style: cellStyle,
+        expandFormat: col.expandFormat,
+      };
+  
+      const td = <FileCell key={key} {...props1} />;
+      tdList.push(td);
+    }
   }
 
   return tdList;

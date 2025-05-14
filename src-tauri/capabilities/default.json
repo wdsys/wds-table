@@ -16,9 +16,14 @@
     "fs:allow-app-write-recursive",
     "fs:allow-app-read",
     "fs:allow-app-write",
+    "core:window:default", 
+    "core:window:allow-start-dragging",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-minimize",
     {
       "identifier": "fs:scope",
-      "allow": [{"path": "**/*"}]
+      "allow": [{"path": "**/*"}],
+      "deny": []
     }
   ]
 }

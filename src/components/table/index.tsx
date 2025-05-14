@@ -65,7 +65,7 @@ const DefaultTableDoc = {
   rows: [],
 };
 
-export default function Table({ fileData, filename , filePath}) {
+export default function Table({ fileData, filename , filePath, handleSave, tableManager}) {
   const [tableDoc, setTableDoc] = React.useState(DefaultData);
 
   function renderNullTable(uuid) {
@@ -124,7 +124,7 @@ export default function Table({ fileData, filename , filePath}) {
   }, [fileData]);
 
   async function saveTable(doc) {
-    await writeContentToFile(filePath, JSON.stringify(doc))
+    handleSave(doc);
   }
 
   return (
@@ -133,6 +133,7 @@ export default function Table({ fileData, filename , filePath}) {
       saveTable={saveTable}
       onParseExcelFile={onParseExcelFile}
       serverAPIFunctions={serverAPIFunctions}
+      tableManager={tableManager}
     />
   );
 }

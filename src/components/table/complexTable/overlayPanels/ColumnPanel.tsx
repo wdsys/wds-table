@@ -1202,6 +1202,7 @@ function ColumnPanel(props, ref) {
 
           {
             !(headLocked || bodyLocked)
+            && currentColumn.dataType !== 'treeNode'
             && (
               <div className="one-button" onClick={onClickDelete}>
                 <div className="icon">

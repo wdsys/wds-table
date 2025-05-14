@@ -502,9 +502,11 @@ function MorePanel(props, ref) {
       } else if (file.name.endsWith('.xls')
         || file.name.endsWith('.xlsx')) {
         doImportExcelFile(file);
-      } else if (file.name.endsWith('.wdt')) {
-        // doImportWDTFile(file);
-      } else {
+      } 
+      // else if (file.name.endsWith('.wdt')) {
+      //   // doImportWDTFile(file);
+      // } 
+      else {
         message.error('文件类型错误');
       }
     });
@@ -654,7 +656,7 @@ function MorePanel(props, ref) {
                       <icons.IconConfig />
                     </div>
                     <div className="name">
-                      {t('field config')}...
+                      {t('field config')}
                     </div>
                   </div>
                 </DropdownButton>
@@ -699,7 +701,7 @@ function MorePanel(props, ref) {
         {(!tableInfo?.type) ? (
           <div className="all-columns">
 
-            <div className="one-column-box">
+            {/* <div className="one-column-box">
               <div className="one-column">
                 <div className="name">
                   {t('lock all table')}
@@ -712,9 +714,9 @@ function MorePanel(props, ref) {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            {
+            {/* {
               !options.lockFullTable
               && (
                 <div className="one-column-box">
@@ -732,7 +734,7 @@ function MorePanel(props, ref) {
                   </div>
                 </div>
               )
-            }
+            } */}
 
             {
               !headLocked

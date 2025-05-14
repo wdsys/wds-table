@@ -9,10 +9,16 @@
     }
 
     .grid {
+        width: 100%;
+        height: calc(100% - 42px);
         display: flex;
         flex-direction: row;
         gap: 16px 16px;
         flex-wrap: wrap;
+        overflow: scroll;
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         .item {
             width: 150px;
@@ -26,7 +32,7 @@
                 text-align: center;
                 line-height: 95px;
                 border: 1px solid #dfe1e4;
-                border-radius: 16px;
+                border-radius: 8px;
                 line-height: 95px;
                 vertical-align: center;
             }

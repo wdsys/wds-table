@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { save } from '@tauri-apps/plugin-dialog';
-import { writeFile } from '@tauri-apps/plugin-fs';
+// import { writeFile } from '@tauri-apps/plugin-fs';
 import { useTranslation } from 'react-i18next';
 import { getRecentFiles } from '@/utils/recentFiles';
 import type { RecentFile } from '@/utils/recentFiles';
 import { addRecentFile } from '@/utils/recentFiles';
-import { generateWindowLabel, generateDefaultTableData } from '@/utils/index'
+import { generateWindowLabel, createInitialTableFile } from '@/utils/index'
 import bg from './preview.png'
 
 import styles from './index.module.less';
@@ -15,7 +15,6 @@ export default function Recent(){
 
     const [recentFiles, setRecentFiles] = useState<RecentFile[]>([]);
     const {t} = useTranslation();
-
     async function loadRecentFiles() {
         const files = await getRecentFiles();
         setRecentFiles(files);
@@ -40,6 +39,7 @@ export default function Recent(){
             height: 600,
             resizable: true,
             dragDropEnabled: false,
+            "decorations": false
         })
 
         webview.once('tauri://created', () => {
@@ -65,12 +65,7 @@ export default function Recent(){
             if (!filePath) return; // 用户取消了保存
     
             // 创建新文件的初始内容
-            const initialContent = generateDefaultTableData();
-    
-            // 将内容写入文件
-            const encoder = new TextEncoder();
-            const data = encoder.encode(JSON.stringify(initialContent, null, 2));
-            await writeFile(filePath, data);
+            await createInitialTableFile(filePath)
     
             // 获取文件名
             const filename = filePath.split('\\').pop() || '';
@@ -87,6 +82,7 @@ export default function Recent(){
                 height: 600,
                 resizable: true,
                 dragDropEnabled: false,
+                decorations: false,
             });
     
             // 添加到最近文件记录

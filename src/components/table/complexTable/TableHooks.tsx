@@ -136,7 +136,6 @@ export function useAutoSaver() {
     options,
     columns,
     rows,
-    attachmentsRef
   } = useContext(CellRendererContext);
 
   // const {
@@ -171,7 +170,6 @@ export function useAutoSaver() {
       options,
       columns,
       rows,
-      attachments: attachmentsRef.current?.attachments
     };
 
     saver.current.save(doc);
@@ -198,7 +196,6 @@ export function useManualSaver() {
     options,
     columns,
     rows,
-    attachmentsRef
   } = useContext(CellRendererContext);
   // const {
   //   lockState,
@@ -235,7 +232,6 @@ export function useManualSaver() {
       options: refOptions.current,
       columns: refColumns.current,
       rows: refRows.current,
-      attachments: attachmentsRef.current?.attachments
     };
     const promise1 = saveTable(doc);
     const promise2 = utils.delay(1000); // 让消息至少保持1秒
@@ -258,7 +254,6 @@ export function useManualSaver() {
       options: refOptions.current,
       columns: refColumns.current,
       rows: refRows.current,
-      attachments: attachmentsRef.current?.attachments
     };
 
     try {
@@ -838,11 +833,11 @@ export function useTableOperations() {
     columns,
     rows,
     setRows,
+    getAttachment,
   } = useContext(CellRendererContext);
 
   const {
     getAPIBaseURL,
-    getAttachment,
     getResourceAttachment,
     getAttachmentVideo,
     createAttachmentVideo,
@@ -874,10 +869,9 @@ export function useTableOperations() {
 
     showGallery({
       data,
-      projectId,
       getAttachment,
       getResourceAttachment,
-      defaultFileDigest: file.digest,
+      defaultFileDigest: file.uuid,
     });
   }
 
@@ -980,6 +974,38 @@ export function useTableOperations() {
     });
   }
 
+  function setCellValues({
+    data,
+  }) {
+    const rowuuids = data.map((i) => i.rowUUID);
+    setRows((oldData) => {
+      const newData = [];
+
+      for (const row of oldData) {
+        if (rowuuids.includes(row.uuid)) {
+          const newRow = {
+            ...row,
+            fields: {
+              ...row.fields,
+            },
+          };
+
+          for (const item of data) {
+            if (item.rowUUID === row.uuid) {
+              newRow.fields[item.colUUID] = item.value;
+            }
+          }
+
+          newData.push(newRow);
+        } else {
+          newData.push(row);
+        }
+      }
+
+      return newData;
+    });
+  }
+
   function onModifyTable(e) {
     const { detail } = e;
     if (!detail) {
@@ -992,6 +1018,8 @@ export function useTableOperations() {
       moveRowToNewIndex(detail);
     } else if (detail.action === 'setCellValue') {
       setCellValue(detail);
+    } else if (detail.action === 'setCellValues') {
+      setCellValues(detail);
     } else {
       console.log('invalid action:', detail);
     }

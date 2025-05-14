@@ -1,5 +1,6 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useContext } from 'react';
+import { SelectedableBlockContext } from './contexts';
 
 function TD(props) {
   const {
@@ -12,7 +13,17 @@ function TD(props) {
     children,
   } = props;
 
+  const {
+    selectedableBlocks,
+    onBlockClick,
+    onBlockMouseUp,
+    getClass,
+    onMouseEnter,
+  } = useContext(SelectedableBlockContext);
+
   function onContextMenu(e) {
+    // 树节点，查找td-content
+    const elem = dataType === 'treeNode' ? e.target.closest('.td-content') : e.target.closest('.cell-view-text');
     e.preventDefault();
 
     if (dataType === 'rowIndex'
@@ -36,6 +47,7 @@ function TD(props) {
       position,
       colUUID,
       rowUUID,
+      cellElem: elem,
     };
 
     const ev = new CustomEvent('notifyPanel', { detail });
@@ -55,11 +67,19 @@ function TD(props) {
     className += ' td-data';
   }
 
+  const selectedClass = getClass({ col: colUUID, row: rowUUID }, selectedableBlocks);
+  if (selectedClass) {
+    className += ` ${selectedClass}`;
+  }
+
   return (
     <div
       className={className}
       onContextMenu={onContextMenu}
       style={{ width, ...style }}
+      onMouseDown={(e) => { onBlockClick({ col: colUUID, row: rowUUID }, e); }}
+      onMouseUp={(e) => { onBlockMouseUp({ col: colUUID, row: rowUUID }, e); }}
+      onMouseEnter={(e) => { onMouseEnter({ col: colUUID, row: rowUUID }, e); }}
     >
       <div className="td-content">
         {children}

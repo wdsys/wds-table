@@ -18,11 +18,12 @@ const zh = {
     "table level up": "升级",
     "table level down": "降级",
     "select all rows": "全选所有行",
+    "coding item": "需求项编码",
     "deselect": "取消选中行",
     "copy selected": "复制选中行",
     "delete selected": "删除选中行",
     "new row": "新增",
-    "tree node": "树节点",
+    "tree node": "标题",
     "field name": "字段名",
     "field config": "字段配置",
     "current config": "当前视图字段设置",
@@ -70,7 +71,8 @@ const zh = {
     "current sort config": "当前视图排序设置",
     "no sort rule": "未设置排序规则",
     "new sort rule": "新增排序规则",
-    "clear sort rule": "清除排序规则"
+    "clear sort rule": "清除排序规则",
+    "save succcess": "保存成功"
 }
 
 export default zh;

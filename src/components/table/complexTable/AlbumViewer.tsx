@@ -345,20 +345,20 @@ export function ImageGallery(props) {
       name, digest, fileUrl, source,
     } = file;
 
-    let blob;
+    // let blob;
 
-    if (source === 'resource') { // 资源
-      blob = await getResourceAttachment(projectId, fileUrl);
-    } else { // 本地
-      blob = await getAttachment(projectId, digest);
-    }
+    // if (source === 'resource') { // 资源
+    //   blob = await getResourceAttachment(projectId, fileUrl);
+    // } else { // 本地
+    //   blob = await getAttachment(projectId, digest);
+    // }
 
-    const isSVG = name?.endsWith('.svg');
-    if (isSVG) {
-      blob = new Blob([blob], { type: 'image/svg+xml' });
-    }
-
-    return URL.createObjectURL(blob);
+    // const isSVG = name?.endsWith('.svg');
+    // if (isSVG) {
+    //   blob = new Blob([blob], { type: 'image/svg+xml' });
+    // }
+    // return URL.createObjectURL(blob);
+    return await getAttachment(`${file.uuid}-${name}`);
   };
 
   useEffect(() => {
@@ -660,14 +660,14 @@ export function ImageGallery(props) {
   );
 }
 
-function onCloseGallery(elem) {
-  ReactDOM.unmountComponentAtNode(elem);
+function onCloseGallery(elem, root) {
+  root.unmount();
   elem.remove();
 }
 
 export function showGallery(props) {
   const {
-    data, projectId, getAttachment, getResourceAttachment,
+    data, getAttachment, getResourceAttachment,
   } = props;
 
   let defaultIndex = 0;
@@ -677,7 +677,7 @@ export function showGallery(props) {
     const { defaultFileDigest } = props;
     for (let i = 0; i < data.length; i += 1) {
       const image = data[i];
-      if (image.digest === defaultFileDigest) {
+      if (image.uuid === defaultFileDigest) {
         defaultIndex = i;
         break;
       }
@@ -694,12 +694,12 @@ export function showGallery(props) {
   const body = document.querySelector('body');
   body.appendChild(elem);
 
-  ReactDOM.createRoot(elem).render(
+  const root = ReactDOM.createRoot(elem);
+  root.render(
     <ImageGallery
       data={data}
       defaultIndex={defaultIndex}
-      projectId={projectId}
-      onClose={(e) => onCloseGallery(elem)}
+      onClose={(e) => onCloseGallery(elem, root)}
       getAttachment={getAttachment}
       getResourceAttachment={getResourceAttachment}
     />

@@ -45,6 +45,8 @@ import {
   CellRendererContext,
   CellRendererContextProvider,
   OverlayStateContextProvider,
+  SelectedableBlockContextProvider,
+  SelectedableBlockContext,
 } from './contexts';
 
 import { DefaultData } from './DefaultData';
@@ -152,6 +154,7 @@ function renderOneColumn(props, DataTypes) {
     col,
     isFirstColumn,
     rows,
+    currentPageRowUUIDs,
   } = props;
 
   if (col.dataType === 'rowIndex') {
@@ -223,36 +226,38 @@ function renderOneColumn(props, DataTypes) {
   const tdList = [];
 
   for (let i = 0; i < rows.length; i += 1) {
-    const row = {
-      ...rows[i],
-      rowIndex: i,
-    };
 
-    const content = <TdContent col={col} row={row} />;
-
-    const key = `${i}-${colIndex}`;
-
-    const props1 = {
-      colUUID: col.uuid,
-      rowUUID: row.uuid,
-      dataType: col.dataType,
-      isFirstColumn,
-      width: col.width,
-    };
-
-    const td = (
-      <TD key={key} {...props1}>
-        {content}
-      </TD>
-    );
-
-    tdList.push(td);
+    if(currentPageRowUUIDs.has(rows[i].uuid)){
+      const row = {
+        ...rows[i],
+        rowIndex: i,
+      };
+  
+      const content = <TdContent col={col} row={row} />;
+  
+      const key = `${i}-${colIndex}`;
+  
+      const props1 = {
+        colUUID: col.uuid,
+        rowUUID: row.uuid,
+        dataType: col.dataType,
+        isFirstColumn,
+        width: col.width,
+      };
+  
+      const td = (
+        <TD key={key} {...props1}>
+          {content}
+        </TD>
+      );
+  
+      tdList.push(td);
+    }
   }
-
   return tdList;
 }
 
-function renderVisibleColumns(columns, rows, options) {
+function renderVisibleColumns(columns, rows, options, currentPageRowUUIDs) {
   const renderedColumns = [];
 
   let isFirstColumn = true;
@@ -272,12 +277,12 @@ function renderVisibleColumns(columns, rows, options) {
       isFirstColumn,
       rows,
       columns,
+      currentPageRowUUIDs,
     }, options.DataTypes);
 
     renderedColumns.push(tdList);
     isFirstColumn = false;
   }
-
   return renderedColumns;
 }
 
@@ -509,6 +514,33 @@ function TableToolBar() {
   return null;
 }
 
+function CheckedRowCount() {
+  const { rows, columns } = useContext(CellRendererContext);
+  const {t} = useTranslation();
+
+  let count = 0;
+
+  const treeNode = columns?.find?.((c) => c.dataType === 'treeNode');
+
+  if (treeNode && rows?.length) {
+    for (const row of rows) {
+      if (row?.fields?.[treeNode.uuid]?.checked) {
+        count += 1;
+      }
+    }
+  }
+
+  if (!count) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginLeft: '8px', color: '#1890ff', fontWeight: 'bold' }}>
+      {t('selectedRows', {count})}
+    </div>
+  );
+}
+
 function TBody(props) {
   const { lastFixedColumnIndex } = props;
   const [selectSheet, setSelectSheet] = useState({});
@@ -522,6 +554,11 @@ function TBody(props) {
     setPagerState,
     tableUUID,
   } = useContext(CellRendererContext);
+
+  const {
+    getRows,
+    getColumns,
+  } = useContext(SelectedableBlockContext);
 
   //   const {
   //     lockState,
@@ -576,6 +613,8 @@ function TBody(props) {
     visibleRows.sort(compareRows);
   }
 
+  const currentRows = [];
+
   // 计算分页位置
   const { pageSize } = pagerState;
   const pages = Math.ceil(visibleRowCount / pageSize);
@@ -594,7 +633,11 @@ function TBody(props) {
 
     const row = visibleRows[i];
     currentPageRowUUIDs.add(row.uuid);
+    currentRows.push(row);
   }
+
+  getRows(currentRows);
+  getColumns(columns);
 
   // const t1 = new Date().getTime();
   const renderOptions = {
@@ -604,10 +647,10 @@ function TBody(props) {
     DataTypes,
   };
 
-  const renderedColumns = renderVisibleColumns(columns, rows, renderOptions);
+  const renderedColumns = renderVisibleColumns(columns, rows, renderOptions, currentPageRowUUIDs);
+
   // const t2 = new Date().getTime();
   // console.log('t2-t1:', t2-t1);
-
   const rowMap = {}; // rowUUID -> rowIndex
   for (let i = 0; i < rows.length; i += 1) {
     const row = rows[i];
@@ -617,22 +660,26 @@ function TBody(props) {
   // 生成行数据
   const trList = [];
 
+  const indexMap =  new Map();
+  const currentPageRowUUIDsArray = Array.from(currentPageRowUUIDs);
   // for (let i = 0; i < rows.length; i += 1) {
-  for (let i = 0; i < visibleRowCount; i += 1) {
-    if (i < startIndex) {
-      continue;
-    } else if (i >= endIndex) {
-      break;
+  for (let i = 0; i < currentPageRowUUIDs.size; i += 1) {
+
+    // const rowIndex = rowMap[row.uuid];
+    const currentRowUUID = currentPageRowUUIDsArray[i]
+    const row = visibleRows.find(r=>r.uuid === currentRowUUID);
+    // 排序 按照currentPageRowUUIDs的顺序
+    let index = indexMap.get(currentRowUUID);
+    if(typeof index !== 'number'){
+      index = renderedColumns[0].findIndex(n=>n.props.rowUUID === currentRowUUID);
+      indexMap.set(currentRowUUID, index)
     }
-
-    const row = visibleRows[i];
-    const rowIndex = rowMap[row.uuid];
-
     const tdList = [];
+
     for (let j = 0; j < renderedColumns.length; j += 1) {
       const col = renderedColumns[j];
       if (col) {
-        const td = col[rowIndex];
+        const td = col[index];
         if (td) {
           tdList.push(td);
         }
@@ -653,7 +700,6 @@ function TBody(props) {
       break;
     }
   }
-
   // const t3 = new Date().getTime();
   // console.log('t3-t2:', t3-t2);
 
@@ -736,7 +782,6 @@ function TBody(props) {
             && <LastTRMemo columns={columns} setRows={setRows} options={options} />
         }
       </div>
-
       <div className="table-pager">
         <Pagination
           defaultPageSize={10}
@@ -750,6 +795,7 @@ function TBody(props) {
           size="small"
           onChange={onPagerChange}
         />
+        <CheckedRowCount />
       </div>
 
       <div className="table-toolbar">
@@ -970,6 +1016,7 @@ export default function ComplexTable(props) {
     getTableTemplates,
     getTableTemplateData,
     serverAPIFunctions,
+    tableManager,
   } = props;
 
   const interfaceFunctions = {
@@ -995,6 +1042,7 @@ export default function ComplexTable(props) {
     treeNodeID,
     treeNodeSpace,
     tableInfo,
+    tableManager,
   };
 
   return (
@@ -1002,9 +1050,11 @@ export default function ComplexTable(props) {
       <InterfaceFunctionContextProvider functions={interfaceFunctions}>
         <CellRendererContextProvider {...cellRenderersContextData}>
           <OverlayStateContextProvider>
-            <HooksContainer>
-              <ComplexContainer tableInfo={tableInfo} />
-            </HooksContainer>
+            <SelectedableBlockContextProvider>
+              <HooksContainer>
+                <ComplexContainer tableInfo={tableInfo} />
+              </HooksContainer>
+            </SelectedableBlockContextProvider>
           </OverlayStateContextProvider>
         </CellRendererContextProvider>
       </InterfaceFunctionContextProvider>

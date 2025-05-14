@@ -156,10 +156,10 @@ function FileList(props) {
     projectId,
     columns, setColumns,
     rows,
+    getAttachment
   } = useContext(CellRendererContext);
 
   const {
-    getAttachment,
     getResourceAttachment,
     putAttachment,
   } = useContext(InterfaceFunctionContext);
@@ -578,17 +578,12 @@ function FileCellPanel(props, ref) {
   }
 
   async function uploadFile(file) {
-    const base64String = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.readAsDataURL(file.file);
-    });
-    addAttachment(file.uuid, base64String)
+    const uniqueName = await addAttachment(file.uuid, file.file)
 
     file.name = file.file.name;
-
       setFileProps({
         uuid: file.uuid,
+        relativePath: uniqueName,
         progress: 100,
         state: 'done',
       });

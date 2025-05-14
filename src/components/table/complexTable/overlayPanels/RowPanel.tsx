@@ -437,6 +437,32 @@ function RowPanel(props, ref) {
     });
   }
 
+  function onClickBatchSelect(e) {
+    const elem = e.target.closest('.one-button');
+    if (!elem) {
+      return;
+    }
+
+    const rect = elem.getBoundingClientRect();
+    const position = {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    const detail = {
+      panelType: 'CheckboxSelectRowsPanel',
+      action: 'toggle',
+      placement: 'right',
+      position,
+      rowUUID,
+    };
+
+    const ev = new CustomEvent('notifyPanel', { detail });
+    window.dispatchEvent(ev);
+  }
+
   if (!panelState.visible) {
     return null;
   }
@@ -612,6 +638,23 @@ function RowPanel(props, ref) {
           }
 
           {
+            !rowLocked
+            && (
+              <div className="one-button" onClick={onClickBatchSelect}>
+                <div className="icon">
+                  <icons.IconCheckbox />
+                </div>
+                <div className="name">
+                  批量操作
+                </div>
+                <div className="right-icon">
+                  <icons.IconRight />
+                </div>
+              </div>
+            )
+          }
+
+          {/* {
             !tableLocked
             && (
               <div className="one-button" onClick={onClickToggleLocked}>
@@ -640,7 +683,7 @@ function RowPanel(props, ref) {
                 }
               </div>
             )
-          }
+          } */}
 
           {
             !tableLocked

@@ -4,7 +4,16 @@ import React, { useEffect } from 'react';
 
 import {
   Input,
+  Button,
+  Divider,
+  message
 } from 'antd';
+
+import {
+  PlusOutlined
+} from '@ant-design/icons';
+
+import { RiArrowGoBackLine, RiArrowGoForwardLine } from "react-icons/ri";
 
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +21,9 @@ import { CellRendererContext } from './contexts';
 // import { MultiClientMutexTool } from './MultiClientMutexTool';
 import { DropdownButton } from './MyDropdown';
 import HanziInput from './HanziInput';
+import historyManager from './history';
+import filterRow from './RowFilter';
+import * as utils from './utils';
 import * as icons from './SvgIcons';
 import './Toolbar.less';
 
@@ -43,33 +55,6 @@ function TableNameEditor() {
         value={options.tableName}
         onChange={onChangeTableName}
       /> */}
-    </div>
-  );
-}
-
-function CheckedRowCount() {
-  const { rows, columns } = useContext(CellRendererContext);
-  const {t} = useTranslation();
-
-  let count = 0;
-
-  const treeNode = columns?.find?.((c) => c.dataType === 'treeNode');
-
-  if (treeNode && rows?.length) {
-    for (const row of rows) {
-      if (row?.fields?.[treeNode.uuid]?.checked) {
-        count += 1;
-      }
-    }
-  }
-
-  if (!count) {
-    return null;
-  }
-
-  return (
-    <div style={{ marginLeft: '54px', color: '#1890ff', fontWeight: 'bold' }}>
-      {t('selectedRows', {count})}
     </div>
   );
 }
@@ -304,21 +289,165 @@ function MoreButton() {
   );
 }
 
+function handleTableBackBottom() {
+  const event = new CustomEvent('backToTableBottom');
+  window.dispatchEvent(event);
+}
+
+function collectFoldedRowUUIDs(columns, rows) {
+  const result = new Set();
+
+  const roots = utils.createTreeFromTable(columns, rows);
+
+  for (const row of rows) {
+    const node = utils.findTreeNodeInRoots(roots, row.uuid);
+    if (node && !utils.isTreeNodeVisible(node)) {
+      result.add(row.uuid);
+    }
+  }
+
+  return result;
+}
+
+function NewLineButton(){
+
+  const { setRows, columns, options, pagerState, rows,
+    setPagerState } = useContext(CellRendererContext);
+    console.log(pagerState, 'pagerState');
+  function onClick(){
+
+    const foldedRowUUIDs = collectFoldedRowUUIDs(columns, rows);
+
+    const filteredRowUUIDs = new Set();
+    for (let i = 0; i < rows.length; i += 1) {
+      const row = rows[i];
+      // If the row is folded, skip it.
+      if (foldedRowUUIDs.has(row.uuid)) {
+        continue;
+      }
+  
+      const filterTrue = filterRow(options.filter, row, columns);
+      if (filterTrue) {
+        // If the row matches the filters, collect it.
+        filteredRowUUIDs.add(row.uuid);
+      }
+    }
+  
+    const visibleRows = [];
+    for (let i = 0; i < rows.length; i += 1) {
+      const row = rows[i];
+      if (filteredRowUUIDs.has(row.uuid)) {
+        visibleRows.push(row);
+      }
+    }
+    const visibleRowCount = visibleRows.length;
+    const pages = Math.ceil(visibleRowCount / pagerState.pageSize);
+    if(pages === pagerState.page){
+      handleTableBackBottom();
+      setTimeout(()=>{
+        utils.appendNewRow(setRows, columns);
+      }, 0)
+    }else{
+      setPagerState(p=>({...p, page: pages}))
+      setTimeout(()=>{
+        handleTableBackBottom();
+        setTimeout(()=>{
+          utils.appendNewRow(setRows, columns);
+        }, 0)
+      }, 0)
+    }
+
+    // 有过滤条件，可能会引发新增行被隐藏情况
+    if (options?.filter?.conditions?.length) {
+      message.info('当前表格存在过滤条件，新增行可能被隐藏。');
+    }
+  }
+
+  return (
+  <div className="table-tool-button" style={{color: '#1890ff'}} onClick={onClick}>
+    <a>
+      <PlusOutlined className="icon" style={{fontSize: '14px', marginTop: '-1px'}} />
+      <span className="text" style={{color: '#1890ff'}}>添加记录</span>
+    </a>
+  </div>
+  )
+}
+
+function BackAndForword(){
+
+  // const forwordDisabled = historyManager.TableStackState.cursor >= -1;
+
+  function goForward(){
+    const event = new Event('redo');
+    window.dispatchEvent(event);
+  }
+
+  function goBack(){
+    const event = new Event('undo');
+    window.dispatchEvent(event)
+  }
+
+
+  console.log(historyManager, 'historyManager')
+  // const backDisabled = 
+  
+
+  return (
+    <>
+      <RiArrowGoBackLine 
+       onClick={goBack}
+       className="table-tool-button" style={{cursor: 'pointer'}} />
+      <RiArrowGoForwardLine 
+       onClick={goForward}
+       className="table-tool-button" style={{cursor: 'pointer'}} />
+    </>
+  )
+}
+
+function PatchAction(){
+  return (
+    <DropdownButton target='PatchActionsPanel' placement='bottom'>
+      <div className="table-tool-button">
+        <a>
+          <span className="icon"><icons.IconPatchSelect/></span>
+          <span className="text">批量选择</span>
+        </a>
+      </div>
+    </DropdownButton>
+  )
+}
+
+function LevelChanger(){
+  return (
+    <DropdownButton target='LevelChangePanel' placement='bottom'>
+      <div className="table-tool-button">
+        <a>
+        <span className="icon"><icons.IconLevelChanger/></span>
+          <span className="text">层级</span>
+        </a>
+      </div>
+    </DropdownButton>
+  )
+}
+
 export default function Toolbar() {
   const { tableInfo } = useContext(CellRendererContext);
 
   return (
     <div className="table-toolbar">
       <div className="left-part">
-        <TableNameEditor />
-        <CheckedRowCount />
+        <NewLineButton />
+        <Divider type='vertical' style={{marginInline: '4px', borderInlineStart: '2px solid #e7e7e7', height: '1.1em'}} />
+        <BackAndForword />
+        {
+          tableInfo?.type ? null : <ConfigButton />
+        }
+        <PatchAction />
+        <LevelChanger />
       </div>
       <SaveEventDisplay />
       {/* <MultiClientMutexTool /> */}
       <div className="right-part">
-        {
-          tableInfo?.type ? null : <ConfigButton />
-        }
         <FilterButton />
         <SortButton />
         {/*

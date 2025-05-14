@@ -6,7 +6,7 @@ export interface RecentFile {
     lastAccess: number;
 }
 
-const MAX_RECENT_FILES = 10;
+const MAX_RECENT_FILES = 100;
 const RECENT_FILES_PATH = 'recent-files.json';
 
 export async function getRecentFiles(): Promise<RecentFile[]> {
@@ -28,7 +28,7 @@ export async function addRecentFile(filePath: string, filename: string): Promise
 
         // Read existing records
         const recentFiles = await getRecentFiles();
-        
+
         // Check if file already exists
         const existingIndex = recentFiles.findIndex(f => f.path === filePath);
         const newEntry: RecentFile = {
