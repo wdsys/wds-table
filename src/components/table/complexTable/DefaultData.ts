@@ -9,6 +9,11 @@ export const DefaultData = {
   },
   columns: [
     {
+      "name": "No.",
+      "dataType": "rowIndex",
+      "width": 60
+    },
+    {
       name: '标题',
       dataType: 'treeNode',
       width: 150,

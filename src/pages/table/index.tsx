@@ -35,6 +35,13 @@ export default function TablePage(){
             // Load table data
             const tableData = await tableManager.current.getTableData();
             setData(tableData);
+            
+            // 获取到文件后 开始记录history
+            setTimeout(()=>{
+                const event = new Event('tableLoaded');
+                window.dispatchEvent(event)
+            }, 0)
+
         } catch (error) {
             console.error('Failed to load table:', error);
         }
@@ -56,7 +63,7 @@ export default function TablePage(){
         }
     }, [path])
 
-
+    console.log(data, 'datadatadata')
     return (
         <ConfigProvider locale={locale}>
             <div className={styles.ctn}>

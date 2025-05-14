@@ -313,7 +313,7 @@ function NewLineButton(){
 
   const { setRows, columns, options, pagerState, rows,
     setPagerState } = useContext(CellRendererContext);
-    console.log(pagerState, 'pagerState');
+
   function onClick(){
 
     const foldedRowUUIDs = collectFoldedRowUUIDs(columns, rows);
@@ -387,8 +387,6 @@ function BackAndForword(){
     window.dispatchEvent(event)
   }
 
-
-  console.log(historyManager, 'historyManager')
   // const backDisabled = 
   
 
