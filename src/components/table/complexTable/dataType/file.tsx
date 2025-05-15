@@ -127,21 +127,21 @@ function ImageInCell(props) {
 
 function VideoInCell(props) {
   const {
-    getAPIBaseURL,
     onClickVideo,
+    getAttachment,
     ...file
   } = props;
 
   const {
     name,
-    digest,
+    uuid,
   } = file;
 
-  const refThumbnail = useRef(null);
+  // const refThumbnail = useRef(null);
 
-  const baseURL = getAPIBaseURL();
-  const selector = `at.${digest}`;
-  const thumbnailURL = `${baseURL}/projects//videos/${selector}/files/thumbnail.jpg`;
+  // const baseURL = getAPIBaseURL();
+  // const selector = `at.${digest}`;
+  // const thumbnailURL = `${baseURL}/projects//videos/${selector}/files/thumbnail.jpg`;
 
   const onClick = (e) => {
     e.preventDefault();
@@ -152,31 +152,31 @@ function VideoInCell(props) {
     }
   };
 
-  const onThumbnailLoad = async () => {
-    // show the thumbnail
-    const img = refThumbnail.current;
-    if (img) {
-      img.style.display = 'block';
-    }
-  };
+  // const onThumbnailLoad = async () => {
+  //   // show the thumbnail
+  //   const img = refThumbnail.current;
+  //   if (img) {
+  //     img.style.display = 'block';
+  //   }
+  // };
 
-  const onThumbnailError = async () => {
-    // hide the thumbnail
-    const img = refThumbnail.current;
-    if (img) {
-      img.style.display = 'none';
-    }
-  };
+  // const onThumbnailError = async () => {
+  //   // hide the thumbnail
+  //   const img = refThumbnail.current;
+  //   if (img) {
+  //     img.style.display = 'none';
+  //   }
+  // };
 
-  useEffect(() => {
-    refThumbnail.current.addEventListener('load', onThumbnailLoad);
-    refThumbnail.current.addEventListener('error', onThumbnailError);
+  // useEffect(() => {
+  //   refThumbnail.current.addEventListener('load', onThumbnailLoad);
+  //   refThumbnail.current.addEventListener('error', onThumbnailError);
 
-    return () => {
-      refThumbnail.current.removeEventListener('load', onThumbnailLoad);
-      refThumbnail.current.removeEventListener('error', onThumbnailError);
-    };
-  }, []);
+  //   return () => {
+  //     refThumbnail.current.removeEventListener('load', onThumbnailLoad);
+  //     refThumbnail.current.removeEventListener('error', onThumbnailError);
+  //   };
+  // }, []);
 
   return (
     <div className="video-cover" onClick={onClick}>
@@ -186,7 +186,7 @@ function VideoInCell(props) {
         </div>
       </div>
       <div className="thumbnail-container">
-        <img ref={refThumbnail} src={thumbnailURL} alt="video thumbnail" />
+        {/* <img ref={refThumbnail} src={thumbnailURL} alt="video thumbnail" /> */}
       </div>
       <div className="bg" />
     </div>

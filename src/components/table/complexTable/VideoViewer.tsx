@@ -43,6 +43,7 @@ export function VideoCinema(props) {
     createAttachmentVideo,
     getResourceAttachment,
     deleteAttachmentVideo,
+    getAttachment,
   } = props;
 
   const {
@@ -52,8 +53,8 @@ export function VideoCinema(props) {
   console.log('attachment:', attachment);
 
   const {
-    digest,
-    source,
+    name,
+    uuid,
   } = attachment;
 
   const [videoInfo, setVideoInfo] = useState(null);
@@ -72,104 +73,110 @@ export function VideoCinema(props) {
     return video;
   };
 
-  const onChangeAttachment = async (projectId1, attachment1) => {
-    if (!projectId1 || !attachment1) {
-      return;
-    }
+  // const onChangeAttachment = async (projectId1, attachment1) => {
+  //   if (!projectId1 || !attachment1) {
+  //     return;
+  //   }
 
-    if (attachment1.source === 'resource') {
-      try {
-        const res = await getResourceAttachment(projectId1, attachment1.fileUrl);
-        setVideoInfo(res);
-      } catch (err) {
-        console.error('cannot get resource attachment video:', err);
-      }
-      return;
-    }
+  //   if (attachment1.source === 'resource') {
+  //     try {
+  //       const res = await getResourceAttachment(projectId1, attachment1.fileUrl);
+  //       setVideoInfo(res);
+  //     } catch (err) {
+  //       console.error('cannot get resource attachment video:', err);
+  //     }
+  //     return;
+  //   }
 
-    const attachmentId = attachment1.digest;
+  //   const attachmentId = attachment1.digest;
 
-    try {
-      const res = await createAttachmentVideo(projectId1, attachmentId);
-      console.log('createAttachmentVideo:', res);
-    } catch (err) {
-      console.error('cannot create attachment video:', err);
-    }
+  //   try {
+  //     const res = await createAttachmentVideo(projectId1, attachmentId);
+  //     console.log('createAttachmentVideo:', res);
+  //   } catch (err) {
+  //     console.error('cannot create attachment video:', err);
+  //   }
 
-    const video = await getVideoInfo(projectId1, attachmentId);
-    console.log('video info:', video);
-    setVideoInfo(video);
-  };
+  //   const video = await getVideoInfo(projectId1, attachmentId);
+  //   console.log('video info:', video);
+  //   setVideoInfo(video);
+  // };
 
-  useEffect(() => {
-    onChangeAttachment(projectId, attachment);
-  }, [projectId, attachment]);
+  // useEffect(() => {
+  //   onChangeAttachment(projectId, attachment);
+  // }, [projectId, attachment]);
 
-  function initPlayer() {
+  async function initPlayer() {
     // destroy the old player, if any
-    if (refPlayer.current) {
-      refPlayer.current.destroy();
-    }
+    // if (refPlayer.current) {
+    //   refPlayer.current.destroy();
+    // }
 
     // 资源文件
-    if (source === 'resource') {
-      // 创建一个 URL 对象
-      const videoURL = URL.createObjectURL(videoInfo);
-      const videoElement = document.querySelector('.dash-video-player');
-      // 设置视频源
-      videoElement.src = videoURL;
+    // if (source === 'resource') {
+    //   // 创建一个 URL 对象
+    //   const videoURL = URL.createObjectURL(videoInfo);
+    //   const videoElement = document.querySelector('.dash-video-player');
+    //   // 设置视频源
+    //   videoElement.src = videoURL;
 
-      // 设置一些视频播放控件
-      videoElement.controls = true;
-      return;
-    }
+    //   // 设置一些视频播放控件
+    //   videoElement.controls = true;
+    //   return;
+    // }
 
-    // create a new player
-    const baseURL = getAPIBaseURL();
-    const selector = `at.${attachment.digest}`;
-    const url = `${baseURL}/projects/${projectId}/videos/${selector}/files/output.mpd`;
-    refPlayer.current = window.dashjs.MediaPlayer().create();
-    refPlayer.current.initialize(document.querySelector('.dash-video-player'), url, true);
+    // // create a new player
+    // const baseURL = getAPIBaseURL();
+    // const selector = `at.${attachment.digest}`;
+    // const url = `${baseURL}/projects/${projectId}/videos/${selector}/files/output.mpd`;
+    // refPlayer.current = window.dashjs.MediaPlayer().create();
+    // refPlayer.current.initialize(document.querySelector('.dash-video-player'), url, true);
+    const src = await getAttachment(`${uuid}-${name}`);
+    refPlayer.current.src = src;
   }
 
   function destroyPlayer() {
     if (refPlayer.current) {
-      console.log('destroy player');
-      refPlayer.current.destroy();
-      refPlayer.current = null;
+      // console.log('destroy player');
+      // refPlayer.current.destroy();
+      // refPlayer.current = null;
     }
   }
 
-  useEffect(() => {
-    if (!videoInfo) {
-      return null;
-    }
+  useEffect(()=>{
+    initPlayer();
+  }, [name, uuid])
 
-    if (!window.dashjs) {
-      const script = document.createElement('script');
+  // useEffect(() => {
+  //   if (!videoInfo) {
+  //     return null;
+  //   }
 
-      if (import.meta.env.PROD) {
-        script.src = '/assets/dash.all.min.27069d08.js';
-      } else {
-        script.src = '/dash.all.min.27069d08.js';
-      }
+  //   if (!window.dashjs) {
+  //     const script = document.createElement('script');
 
-      script.async = true;
+  //     if (import.meta.env.PROD) {
+  //       script.src = '/assets/dash.all.min.27069d08.js';
+  //     } else {
+  //       script.src = '/dash.all.min.27069d08.js';
+  //     }
 
-      script.onload = () => {
-        initPlayer();
-      };
+  //     script.async = true;
 
-      document.body.appendChild(script);
-    } else {
-      initPlayer();
-    }
+  //     script.onload = () => {
+  //       initPlayer();
+  //     };
 
-    return () => {
-      destroyPlayer();
-      setVideoInfo(null);
-    };
-  }, [videoInfo]);
+  //     document.body.appendChild(script);
+  //   } else {
+  //     initPlayer();
+  //   }
+
+  //   return () => {
+  //     destroyPlayer();
+  //     setVideoInfo(null);
+  //   };
+  // }, [videoInfo]);
 
   function onClickClose() {
     if (onClose) {
@@ -227,69 +234,57 @@ export function VideoCinema(props) {
   }, []);
 
   function renderVideo() {
-    if (!videoInfo) {
-      return (
-        <div>
-          加载中...
-        </div>
-      );
-    }
 
-    if (videoInfo.state === 0) {
-      return (
-        <div>
-          视频尚未处理
-        </div>
-      );
-    }
+    // if (videoInfo.state === 0) {
+    //   return (
+    //     <div>
+    //       视频尚未处理
+    //     </div>
+    //   );
+    // }
 
-    if (videoInfo.state === 1) {
-      return (
-        <div>
-          视频正在处理中，请稍后重试...
-        </div>
-      );
-    }
+    // if (videoInfo.state === 1) {
+    //   return (
+    //     <div>
+    //       视频正在处理中，请稍后重试...
+    //     </div>
+    //   );
+    // }
 
-    if (videoInfo.state === 3) {
-      return (
-        <div>
-          视频处理失败
-        </div>
-      );
-    }
+    // if (videoInfo.state === 3) {
+    //   return (
+    //     <div>
+    //       视频处理失败
+    //     </div>
+    //   );
+    // }
 
-    if (videoInfo.state !== 2 && source !== 'resource') {
-      return (
-        <div>
-          视频状态异常（状态码:
-          {' '}
-          {videoInfo.state}
-          ）
-        </div>
-      );
-    }
+    // if (videoInfo.state !== 2 && source !== 'resource') {
+    //   return (
+    //     <div>
+    //       视频状态异常（状态码:
+    //       {' '}
+    //       {videoInfo.state}
+    //       ）
+    //     </div>
+    //   );
+    // }
 
     return (
       <div className="video-box">
-        <video className="dash-video-player" controls />
+        <video ref={refPlayer} className="dash-video-player" controls />
       </div>
     );
   }
 
   return (
     <div className="video-cinema">
-      {videoInfo
-        && (
-          <>
-            <div className="video-container">
+      <div className="video-container">
               {renderVideo()}
             </div>
             <div className="video-title">
               <span>{attachment.name || '无标题'}</span>
             </div>
-          </>
-        )}
 
       <div className="cinema-toolbar">
         <TooltipButton
@@ -303,8 +298,8 @@ export function VideoCinema(props) {
   );
 }
 
-function onCloseCinema(elem) {
-  ReactDOM.unmountComponentAtNode(elem);
+function onCloseCinema(elem, root) {
+  root.unmount();
   elem.remove();
 }
 
@@ -317,6 +312,7 @@ export function showCinema(props) {
     createAttachmentVideo,
     deleteAttachmentVideo,
     getResourceAttachment,
+    getAttachment,
   } = props;
 
   const elem = document.createElement('div');
@@ -326,16 +322,18 @@ export function showCinema(props) {
   const body = document.querySelector('body');
   body.appendChild(elem);
 
-  ReactDOM.createRoot(elem).render(
+  const root = ReactDOM.createRoot(elem);
+  root.render(
     <VideoCinema
       data={data}
       projectId={projectId}
-      onClose={(e) => onCloseCinema(elem)}
+      onClose={(e) => onCloseCinema(elem, root)}
       getAPIBaseURL={getAPIBaseURL}
       getAttachmentVideo={getAttachmentVideo}
       createAttachmentVideo={createAttachmentVideo}
       deleteAttachmentVideo={deleteAttachmentVideo}
       getResourceAttachment={getResourceAttachment}
+      getAttachment={getAttachment}
     />
   )
 }

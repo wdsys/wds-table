@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, message } from '@tauri-apps/plugin-dialog';
+import { exists } from '@tauri-apps/plugin-fs';
 // import { writeFile } from '@tauri-apps/plugin-fs';
 import { useTranslation } from 'react-i18next';
 import { getRecentFiles } from '@/utils/recentFiles';
@@ -21,6 +22,15 @@ export default function Recent(){
     }
 
     async function openRecentFileInWindow(recentItem: RecentFile){
+
+        
+        const fileExists = await exists(recentItem.path);
+        if (!fileExists) {
+            // Close current window
+            await message(t('File not found'), { title: 'WDS-Table', kind: 'error' });
+            loadRecentFiles();
+            return;
+        }
 
         const path = encodeURIComponent(recentItem.path)
         const windowLabel = generateWindowLabel(path)
@@ -66,7 +76,7 @@ export default function Recent(){
     
             // 创建新文件的初始内容
             await createInitialTableFile(filePath)
-    
+
             // 获取文件名
             const filename = filePath.split('\\').pop() || '';
             

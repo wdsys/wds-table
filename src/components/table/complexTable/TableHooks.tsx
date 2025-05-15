@@ -888,6 +888,7 @@ export function useTableOperations() {
       createAttachmentVideo,
       deleteAttachmentVideo,
       getResourceAttachment,
+      getAttachment,
     });
   }
 

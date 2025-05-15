@@ -1,4 +1,4 @@
-import { BaseDirectory, mkdir, readTextFile, writeFile } from '@tauri-apps/plugin-fs';
+import { BaseDirectory, mkdir, readTextFile, writeFile, exists } from '@tauri-apps/plugin-fs';
 
 export interface RecentFile {
     path: string;
@@ -11,8 +11,30 @@ const RECENT_FILES_PATH = 'recent-files.json';
 
 export async function getRecentFiles(): Promise<RecentFile[]> {
     try {
-        const content = await readTextFile(RECENT_FILES_PATH, { baseDir: BaseDirectory.AppData });
-        return JSON.parse(content);
+        const content = await readTextFile(RECENT_FILES_PATH, { 
+            baseDir: BaseDirectory.AppData 
+        });
+        const files: RecentFile[] = JSON.parse(content);
+        
+        // Filter out non-existent files
+        const existingFiles = [];
+        for (const file of files) {
+            const fileExists = await exists(file.path);
+            if (fileExists) {
+                existingFiles.push(file);
+            }
+        }
+
+        // If any files were filtered out, update the storage
+        if (existingFiles.length !== files.length) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(JSON.stringify(existingFiles, null, 2));
+            await writeFile(RECENT_FILES_PATH, data, { 
+                baseDir: BaseDirectory.AppData 
+            });
+        }
+
+        return existingFiles;
     } catch {
         return [];
     }

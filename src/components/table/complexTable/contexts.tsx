@@ -625,6 +625,7 @@ export function SelectedableBlockContextProvider(props) {
           if (isInputFocused) return;
 
           utils.readTextTableFromClipboard().then((data) => {
+            if(!data) return;
             const strMatrix = data;
             const changeData = [];
             const changeEnumColValues = {};

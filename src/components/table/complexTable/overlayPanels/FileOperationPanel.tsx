@@ -208,9 +208,10 @@ function FileOperationPanel(props, ref) {
       }
   
       // Save the blob to user selected location
-      await saveBlobToFile(file.name, blob);
-      
-      message.success('File downloaded successfully');
+      const filePath = await saveBlobToFile(file.name, blob);
+      if(filePath){
+        message.success('File downloaded successfully');
+      }
       closePanel();
     } catch (error) {
       console.error('Download failed:', error);
@@ -331,6 +332,7 @@ function FileOperationPanel(props, ref) {
       createAttachmentVideo,
       deleteAttachmentVideo,
       getResourceAttachment,
+      getAttachment,
     });
 
     closePanel();

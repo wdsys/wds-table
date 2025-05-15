@@ -72,7 +72,8 @@ const zh = {
     "no sort rule": "未设置排序规则",
     "new sort rule": "新增排序规则",
     "clear sort rule": "清除排序规则",
-    "save succcess": "保存成功"
+    "save succcess": "保存成功",
+    "File not found": "文件不存在"
 }
 
 export default zh;

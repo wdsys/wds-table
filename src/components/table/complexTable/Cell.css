@@ -337,6 +337,7 @@
   padding: 3px 8px;
   height: 100%;
   display: flex;
+  box-sizing: border-box;
   flex-flow: column nowrap;
 }
 .cell-view-file .file-item {

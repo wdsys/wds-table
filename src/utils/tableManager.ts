@@ -62,7 +62,7 @@ export class TableManager {
           const content = await file.async('uint8array');
           const fileName = path.replace(/^attachments\//, '');
           const filePath = await join(this.currentSession.attachmentsPath, fileName);
-          console.log(filePath, 'filePath')
+
           await writeFile(filePath, content);
         }
       }
@@ -110,6 +110,7 @@ export class TableManager {
     if (!this.currentSession) throw new Error('No active session');
     const encoder = new TextEncoder();
     const content = encoder.encode(JSON.stringify(data, null, 2));
+
     await writeFile(this.currentSession.dataPath, content);
   }
 
@@ -119,6 +120,7 @@ export class TableManager {
    * @returns 返回附件在临时目录中的路径
    */
     async uploadAttachment(uuid: string, file: File): Promise<string> {
+
         if (!this.currentSession) {
           throw new Error('No active session');
         }

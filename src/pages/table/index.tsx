@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router";
-import {getFileContent} from '@/utils/file'
 import Table from '@/components/table'
-import Toolbar from "@/components/table/toolbar";
 import { ConfigProvider } from 'antd';
 import { TfiMenu } from "react-icons/tfi";
 import zhCN from 'antd/locale/zh_CN';
@@ -63,7 +61,6 @@ export default function TablePage(){
         }
     }, [path])
 
-    console.log(data, 'datadatadata')
     return (
         <ConfigProvider locale={locale}>
             <div className={styles.ctn}>

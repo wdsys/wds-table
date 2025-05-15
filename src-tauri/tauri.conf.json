@@ -13,6 +13,7 @@
     "windows": [
       {
         "title": "",
+        "label": "main",
         "width": 970,
         "height": 600,
         "resizable": false,
@@ -62,6 +63,14 @@
       "webviewInstallMode": {
         "type": "embedBootstrapper"
       }
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": ["table"],
+        "name": "WDS Table",
+        "description": "WDS Table Document",
+        "mimeType": "application/zip"
+      }
+    ]
   }
 }

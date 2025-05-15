@@ -12,8 +12,8 @@ import withTitleBar from '@/components/withTitleBar';
 import withTitleBar2 from "@/components/withTitleBar2";
 
 import '@/locale/i18n';
-
 import './App.css'
+import 'antd/dist/reset.css';
 
 interface ContextMenuEvent extends MouseEvent {
   preventDefault: () => void;

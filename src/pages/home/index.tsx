@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { Outlet, NavLink } from "react-router";
 import { PiClock } from "react-icons/pi";
 import { VscNewFile } from "react-icons/vsc";
 import { LiaSwatchbookSolid } from "react-icons/lia";
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import {listen} from '@tauri-apps/api/event';
+import { message } from '@tauri-apps/plugin-dialog';
 import { TbSettings } from "react-icons/tb";
 import { selectFileByDialog } from '@/utils/file';
 import { generateWindowLabel } from '@/utils/index'
@@ -31,8 +34,12 @@ export default function Home(){
 
     const {t} = useTranslation()
 
-    async function onOpenLocalFile(){
-        const filePath = await selectFileByDialog(['table'], false);
+    async function onOpenLocalFile(infilepath?:string){
+        let filePath:string|undefined = infilepath;
+        if(!filePath){
+            filePath = await selectFileByDialog(['table'], false) as string;
+        }
+        
         if(!filePath) return;
         const path = encodeURIComponent(filePath as string)
         const windowLabel = generateWindowLabel(path)
@@ -51,6 +58,7 @@ export default function Home(){
             height: 600,
             resizable: true,
             dragDropEnabled: false,
+            "decorations": false
         });
 
         // 添加到最近文件记录
@@ -110,6 +118,21 @@ export default function Home(){
         }
     }
 
+    useEffect(() => {
+        // Listen for file open events
+        const unlisten = listen('open-table-file', async (event: { payload: string }) => {
+            const filePath = event.payload;
+
+            await message(event.payload, { title: 'WDS-Table', kind: 'error' });
+
+            await onOpenLocalFile(filePath);
+        });
+    
+        return () => {
+            unlisten.then(fn => fn());
+        };
+    }, []);
+
     return (
         <div className={styles.ctn}>
             <div className={styles.aside}>
@@ -122,7 +145,7 @@ export default function Home(){
                         <span className={styles.icon}><PiClock size='22'/></span>
                         <span>{t('recent')}</span>
                     </NavLink>
-                    <FakeLink onClick={onOpenLocalFile} className={styles.item}>
+                    <FakeLink onClick={()=>onOpenLocalFile()} className={styles.item}>
                         <>
                             <span className={styles.icon}><VscNewFile size='22'/></span>
                             <span>{t('open locale file')}</span>

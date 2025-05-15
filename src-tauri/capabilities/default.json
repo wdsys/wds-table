@@ -12,17 +12,28 @@
     "shell:default",
     "shell:allow-open",
     "core:window:allow-set-focus",
+    
     "fs:allow-app-read-recursive",
     "fs:allow-app-write-recursive",
     "fs:allow-app-read",
     "fs:allow-app-write",
+    "fs:allow-read",
+    "fs:allow-create",
+    "fs:allow-write",
+    "fs:allow-exists",
+
     "core:window:default", 
     "core:window:allow-start-dragging",
     "core:window:allow-toggle-maximize",
     "core:window:allow-minimize",
     {
       "identifier": "fs:scope",
-      "allow": [{"path": "**/*"}],
+      "allow": [
+        {"path": "**/*"},         
+        {
+          "path": "**/*.table"
+        }
+      ],
       "deny": []
     }
   ]

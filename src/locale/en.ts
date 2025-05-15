@@ -73,7 +73,8 @@ const en = {
     "current sort config": "Current Table Sort Configuration",
     "no sort rule": "No Sort Rules",
     "new sort rule": "New Sort Rule",
-    "clear sort rule": "Clear Sort Rules"
+    "clear sort rule": "Clear Sort Rules",
+    "File not found": "File not found"
 }
 
 export default en

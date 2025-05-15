@@ -1,7 +1,6 @@
 import { open, save } from '@tauri-apps/plugin-dialog';
 import { readTextFile, writeFile } from '@tauri-apps/plugin-fs';
 import {open as shellOpen} from '@tauri-apps/plugin-shell';
-import { tempDir, join } from '@tauri-apps/api/path'
 
 export async function selectFileByDialog(extensions: string[], multiple = false){
     const file = await open({
