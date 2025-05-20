@@ -59,6 +59,9 @@ export default function Recent(){
         webview.once('tauri://error', (e) => {
             console.error(e);
         });
+
+        await addRecentFile(recentItem.path, recentItem.filename);
+        loadRecentFiles();
     }
 
     async function openNewFileInWindow() {

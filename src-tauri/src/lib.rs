@@ -4,7 +4,7 @@ use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent}, Manager
 };
-use crate::utils::{ handle_file_associations};
+use crate::utils::{ generate_window_label, handle_file_associations};
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -22,10 +22,39 @@ pub fn run() {
           ))
         .build())
         .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
-            let _ = app
+
+            let args: Vec<String> = args.into_iter().skip(1).collect();
+
+            if let Some(file_path) = args.into_iter().find(|arg| !arg.starts_with('-')) {
+                // 生成窗口标签
+                let encode_path = urlencoding::encode(&file_path);
+                let window_label = generate_window_label(&encode_path);
+                
+                // 检查该文件的窗口是否已存在
+                if let Some(existing_window) = app.get_webview_window(&window_label) {
+                    let _ = existing_window.set_focus();
+                } else {
+                    // 创建新窗口打开文件
+                    let _ = tauri::WebviewWindowBuilder::new(
+                        app,
+                        window_label,
+                        tauri::WebviewUrl::App(format!("/table?file={}", file_path).into())
+                    )
+                    .decorations(false)
+                    .center()
+                    .min_inner_size(970.0, 600.0)
+                    .drag_and_drop(false)
+                    .resizable(false)
+                    .build()
+                    .unwrap();  
+                }
+            } else {
+                let _ = app
                 .get_webview_window("main")
                 .expect("no main window")
                 .set_focus();
+            }
+
         }))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
