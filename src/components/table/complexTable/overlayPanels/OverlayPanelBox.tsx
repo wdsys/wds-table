@@ -159,15 +159,21 @@ function OverlayPanelBox(props) {
     e.stopPropagation();
   }
 
+  const style = {
+    display: state.visible ? 'block' : 'none',
+    left: `${left}px`,
+    top: `${top}px`,
+  };
+
+  if(state.zIndex){
+    style.zIndex = state.zIndex;
+  }
+
   return (
     <div
       ref={ref}
       className="absolute-div"
-      style={{
-        display: state.visible ? 'block' : 'none',
-        left: `${left}px`,
-        top: `${top}px`,
-      }}
+      style={style}
       onClick={(e) => onClick(e)}
     >
       {children}

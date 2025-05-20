@@ -2,7 +2,9 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": ["*"],
+  "windows": [
+    "*"
+  ],
   "permissions": [
     "core:window:allow-close",
     "core:default",
@@ -12,7 +14,6 @@
     "shell:default",
     "shell:allow-open",
     "core:window:allow-set-focus",
-    
     "fs:allow-app-read-recursive",
     "fs:allow-app-write-recursive",
     "fs:allow-app-read",
@@ -21,20 +22,25 @@
     "fs:allow-create",
     "fs:allow-write",
     "fs:allow-exists",
-
-    "core:window:default", 
+    "core:tray:default",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:window:default",
     "core:window:allow-start-dragging",
     "core:window:allow-toggle-maximize",
     "core:window:allow-minimize",
     {
       "identifier": "fs:scope",
       "allow": [
-        {"path": "**/*"},         
+        {
+          "path": "**/*"
+        },
         {
           "path": "**/*.table"
         }
       ],
       "deny": []
-    }
+    },
+    "log:default"
   ]
 }

@@ -274,6 +274,7 @@ function ConfigPanel(props, ref) {
     position: null,
     minWidth: 240,
     minHeight: 145,
+    zIndex: 1,
   });
 
   useToggleablePanel(ref, setPanelState);

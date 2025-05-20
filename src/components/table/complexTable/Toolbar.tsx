@@ -392,12 +392,12 @@ function BackAndForword(){
 
   return (
     <>
-      <RiArrowGoBackLine 
-       onClick={goBack}
-       className="table-tool-button" style={{cursor: 'pointer'}} />
-      <RiArrowGoForwardLine 
-       onClick={goForward}
-       className="table-tool-button" style={{cursor: 'pointer'}} />
+      <div className="table-tool-button" onClick={goBack} style={{cursor: 'pointer'}}>
+        <RiArrowGoBackLine/>
+      </div>
+      <div className="table-tool-button" onClick={goForward} style={{cursor: 'pointer'}}>
+        <RiArrowGoForwardLine/>
+      </div>
     </>
   )
 }

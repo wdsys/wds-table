@@ -9,14 +9,28 @@ export function openUrlByBrowser(url: string){
 
 // 生成合法的窗口标签
 export function generateWindowLabel(filePath: string): string {
-    // 使用简单的哈希算法，也可以使用更复杂的哈希函数
-    let hash = 0;
-    for (let i = 0; i < filePath.length; i++) {
-        const char = filePath.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32-bit integer
-    }
-    return `window_${Math.abs(hash)}`;
+  // Use BigInt for 64-bit integer operations to match Rust's i64
+  let hash = BigInt(5381); // Same prime number initial value as Rust
+  
+  for (let i = 0; i < filePath.length; i++) {
+      const char = BigInt(filePath.charCodeAt(i));
+      
+      // Match Rust's operations: (hash << 5) - hash + char
+      try {
+          hash = ((hash << BigInt(5)) - hash) + char;
+          
+          // Ensure we stay within i64 bounds
+          if (hash > BigInt(Number.MAX_SAFE_INTEGER)) {
+              hash = hash % BigInt(Number.MAX_SAFE_INTEGER);
+          }
+      } catch (e) {
+          // Handle potential BigInt overflow
+          const absValue = hash < 0n ? -hash : hash;
+          hash = absValue;
+      }
+  }
+  
+  return `window_${hash >= 0n ? hash : -hash}`;
 }
 
 export function generateDefaultTableData(){

@@ -7,17 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri",
-    "register-file-type": "powershell -ExecutionPolicy Bypass -File .\\scripts\\register-file-type.ps1"
+    "tauri": "tauri"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2",
+    "@tauri-apps/plugin-log": "~2",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-shell": "~2",
-    "antd": "^5.25.1",
+    "antd": "4.24.12",
     "axios": "^1.7.9",
     "i18next": "^24.2.2",
     "immer": "^10.1.1",
