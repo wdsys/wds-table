@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, NavLink } from "react-router";
 import { PiClock } from "react-icons/pi";
 import { VscNewFile } from "react-icons/vsc";
-import { LiaSwatchbookSolid } from "react-icons/lia";
+// import { LiaSwatchbookSolid } from "react-icons/lia";
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import {listen} from '@tauri-apps/api/event';
 import { message } from '@tauri-apps/plugin-dialog';
@@ -151,10 +151,10 @@ export default function Home(){
                             <span>{t('open locale file')}</span>
                         </>
                     </FakeLink>
-                    <NavLink to='/home/template' className={styles.item}>
+                    {/* <NavLink to='/home/template' className={styles.item}>
                         <span className={styles.icon}><LiaSwatchbookSolid size='22'/></span>
                         <span>{t('library')}</span>
-                    </NavLink>
+                    </NavLink> */}
                     <hr />
                 </div>
 
