@@ -520,11 +520,11 @@ function CheckedRowCount() {
 
   let count = 0;
 
-  const treeNode = columns?.find?.((c) => c.dataType === 'treeNode');
+  const treeNode = columns?.find?.((c) => c.dataType === 'rowIndex');
 
   if (treeNode && rows?.length) {
     for (const row of rows) {
-      if (row?.fields?.[treeNode.uuid]?.checked) {
+      if (row?.fields?.[treeNode.uuid]) {
         count += 1;
       }
     }

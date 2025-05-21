@@ -61,7 +61,7 @@ function CheckboxSelectRowsPanel(props, ref) {
   function onClickSelectTopAll(e) {
     let treeNodeUUID = null;
     for (const col of columns) {
-      if (col.dataType === 'treeNode') {
+      if (col.dataType === 'rowIndex') {
         treeNodeUUID = col.uuid;
         break;
       }
@@ -82,10 +82,9 @@ function CheckboxSelectRowsPanel(props, ref) {
         if (!findTarget && !row?.locked) {
           const filterTrue = filterRow(options.filter, row, columns);
           if (filterTrue) {
-            const oldValue = row.fields[treeNodeUUID] || {};
             newRow.fields = {
               ...(row?.fields || {}),
-              [treeNodeUUID]: { ...oldValue, checked: true },
+              [treeNodeUUID]:  true,
             };
           }
         }
@@ -107,7 +106,7 @@ function CheckboxSelectRowsPanel(props, ref) {
   function onClickSelectBottomAll(e) {
     let treeNodeUUID = null;
     for (const col of columns) {
-      if (col.dataType === 'treeNode') {
+      if (col.dataType === 'rowIndex') {
         treeNodeUUID = col.uuid;
         break;
       }
@@ -131,10 +130,9 @@ function CheckboxSelectRowsPanel(props, ref) {
         if (findTarget && !row.locked) {
           const filterTrue = filterRow(options.filter, row, columns);
           if (filterTrue) {
-            const oldValue = row.fields[treeNodeUUID] || {};
             newRow.fields = {
               ...(row?.fields || {}),
-              [treeNodeUUID]: { ...oldValue, checked: true },
+              [treeNodeUUID]: true,
             };
           }
         }
@@ -152,7 +150,7 @@ function CheckboxSelectRowsPanel(props, ref) {
   function onClickSelectTopNone(e) {
     let treeNodeUUID = null;
     for (const col of columns) {
-      if (col.dataType === 'treeNode') {
+      if (col.dataType === 'rowIndex') {
         treeNodeUUID = col.uuid;
         break;
       }
@@ -173,10 +171,9 @@ function CheckboxSelectRowsPanel(props, ref) {
         if (!findTarget && !row.locked) {
           const filterTrue = filterRow(options.filter, row, columns);
           if (filterTrue) {
-            const oldValue = row.fields[treeNodeUUID] || {};
             newRow.fields = {
               ...(row?.fields || {}),
-              [treeNodeUUID]: { ...oldValue, checked: false },
+              [treeNodeUUID]: false,
             };
           }
         }
@@ -198,7 +195,7 @@ function CheckboxSelectRowsPanel(props, ref) {
   function onClickSelectBottomNone(e) {
     let treeNodeUUID = null;
     for (const col of columns) {
-      if (col.dataType === 'treeNode') {
+      if (col.dataType === 'rowIndex') {
         treeNodeUUID = col.uuid;
         break;
       }
@@ -222,10 +219,9 @@ function CheckboxSelectRowsPanel(props, ref) {
         if (findTarget && !row.locked) {
           const filterTrue = filterRow(options.filter, row, columns);
           if (filterTrue) {
-            const oldValue = row.fields[treeNodeUUID] || {};
             newRow.fields = {
               ...(row?.fields || {}),
-              [treeNodeUUID]: { ...oldValue, checked: false },
+              [treeNodeUUID]: false,
             };
           }
         }

@@ -280,7 +280,7 @@ export function getSelectedRows(rows, treeNodeColumn) {
 
   for (const row of rows) {
     const value = row.fields?.[treeNodeColumn.uuid];
-    if (value?.checked) {
+    if (value) {
       selectedRows.push(row);
     }
   }

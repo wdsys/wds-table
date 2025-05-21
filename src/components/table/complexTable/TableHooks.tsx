@@ -1185,9 +1185,9 @@ export function useDeleteSelected() {
   async function deleteSelected() {
     let length = 0;
     for (const col of columns) {
-      if (col.dataType === 'treeNode') {
+      if (col.dataType === 'rowIndex') {
         for (const row of rows) {
-          const selected = !!row.fields?.[col.uuid]?.checked;
+          const selected = !!row.fields?.[col.uuid];
           if (selected) { length += 1; }
         }
       } else {
@@ -1200,9 +1200,9 @@ export function useDeleteSelected() {
     setRows((oldData) => {
       const newData = [];
       for (const col of columns) {
-        if (col.dataType === 'treeNode') {
+        if (col.dataType === 'rowIndex') {
           for (const row of oldData) {
-            const selected = !!row.fields?.[col.uuid]?.checked;
+            const selected = !!row.fields?.[col.uuid];
             const filterTrue = filterRow(options.filter, row, columns);
             // 删除选中且可见的行
             if (!(selected && filterTrue)) {
@@ -1254,7 +1254,8 @@ export function useCopySelectedRowsToClipboard() {
   projectIdRef.current = projectId;
 
   async function onCopyToClipboard() {
-    const treeNodeColumn = utils.getTreeNodeColumn(columnsRef.current);
+    debugger;
+    const treeNodeColumn = columnsRef.current?.find?.(col=>col?.dataType === 'rowIndex'); // utils.getTreeNodeColumn(columnsRef.current);
     if (!treeNodeColumn) {
       return;
     }
@@ -1277,12 +1278,12 @@ export function useCopySelectedRowsToClipboard() {
       const rowIndex = rowIndices[row.uuid] || 0;
 
       for (const col of columnsRef.current) {
-        let value;
-        if (col.dataType === 'rowIndex') {
-          value = rowIndex + 1;
-        } else {
-          value = row.fields?.[col.uuid];
-        }
+        const value = row.fields?.[col.uuid];
+        // if (col.dataType === 'rowIndex') {
+        //   value = rowIndex + 1;
+        // } else {
+        //   value = row.fields?.[col.uuid];
+        // }
 
         let str;
         const conv = DataTypes[col.dataType]?.valueToClipboardString;
@@ -1721,16 +1722,17 @@ function useCheckRow() {
         const newRow = { ...row };
         for (const col of columns) {
           if (row.fields) {
-            if (col.dataType === 'treeNode') {
+            if (col.dataType === 'rowIndex') {
               const filterTrue = filterRow(options.filter, row, columns);
               if (filterTrue) {
                 newRow.fields = {
                   ...row.fields,
-                  [col.uuid]: {
-                    ...row.fields?.[col.uuid],
-                    // checked: !!changeBtn,
-                    checked: true,
-                  },
+                  [col.uuid]: true
+                  // {
+                  //   ...row.fields?.[col.uuid],
+                  //   // checked: !!changeBtn,
+                  //   checked: true,
+                  // },
                 };
               }
             }
@@ -1753,15 +1755,16 @@ function useCheckRow() {
         const newRow = { ...row };
         for (const col of columns) {
           if (row.fields) {
-            if (col.dataType === 'treeNode') {
+            if (col.dataType === 'rowIndex') {
               const filterTrue = filterRow(options.filter, row, columns);
               if (filterTrue) {
                 newRow.fields = {
                   ...row.fields,
-                  [col.uuid]: {
-                    ...row.fields?.[col.uuid],
-                    checked: false,
-                  },
+                  [col.uuid]: false
+                  // {
+                  //   ...row.fields?.[col.uuid],
+                  //   checked: false,
+                  // },
                 };
               }
             }

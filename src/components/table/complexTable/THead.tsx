@@ -10,6 +10,7 @@ import React, {
 import {
   message,
   Tooltip,
+  Checkbox
 } from 'antd';
 
 import {
@@ -18,6 +19,7 @@ import {
 } from './contexts';
 
 import { ColumnIcon, DataTypes } from './dataType';
+import filterRow from './RowFilter';
 import Splitter from './Splitter';
 import * as icons from './SvgIcons';
 import * as utils from './utils';
@@ -145,6 +147,9 @@ const TH = React.memo((props) => {
     sheetUUID,
     projectId,
     client,
+    rows,
+    options,
+    columns,
   } = props;
 
   const isRowIndexColumn = (dataType === 'rowIndex');
@@ -228,6 +233,40 @@ const TH = React.memo((props) => {
     );
   }
 
+  function onCheckboxChange(e){
+    const checked = e.target.checked;
+    let ev = null;
+    if(checked){
+      ev = new CustomEvent('selectAllRow');
+    }else{
+      ev = new CustomEvent('unSelectAllRow');
+    }
+    window.dispatchEvent(ev);
+  }
+
+  function getCheckboxProp(){
+    let checkedLength = 0;
+    const filteredRows = [];
+
+    for(const r of rows){
+
+      const filterTrue = filterRow(options.filter, r, columns)
+
+      if(filterTrue){
+        filteredRows.push(r);
+        if(r.fields[colUUID]){
+          checkedLength += 1;
+        }
+      }
+    }
+    const allChecked = filteredRows?.length > 0 && checkedLength === filteredRows.length;
+    const indeterminate = checkedLength>0 && filteredRows.length > checkedLength;
+
+    return {
+      checked: allChecked, indeterminate
+    }
+  }
+
   return (
     <div id={`column-${colUUID}`} className={className} style={{ width }}>
       <div className="th-content" onClick={(e) => onClick(e)}>
@@ -238,8 +277,8 @@ const TH = React.memo((props) => {
             </span>
           )}
 
-        <span className="column-name">
-          {colName}
+        <span className="column-name" style={{textAlign: isRowIndexColumn ? 'center' : 'left'}}>
+          {isRowIndexColumn ? <Checkbox onChange={onCheckboxChange} {...getCheckboxProp()}/> : colName}
         </span>
 
         {/* Array.isArray(explainInfo) 兼容旧数据 */}
@@ -277,6 +316,7 @@ function THead(props) {
     columns,
     setColumns,
     tableInfo,
+    rows,
   } = useContext(CellRendererContext);
 
   useColumnResizer(setColumns);
@@ -351,11 +391,14 @@ function THead(props) {
         <TH
           key={i}
           {...col}
+          rows={rows}
           isFirstColumn={isFirstColumn}
           locked={locked}
           tableType={tableInfo.type}
           sheetUUID={tableInfo.uuid}
           AllDataTypes={DataTypes}
+          options={options}
+          columns={columns}
         />
       );
 

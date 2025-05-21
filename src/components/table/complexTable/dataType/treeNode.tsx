@@ -392,9 +392,9 @@ function TreeNodeCellContent(props) {
       className="cell-view-treeNode"
       style={{ marginLeft: `${indent}px` }}
     >
-      <div className="checkbox">
+      {/* <div className="checkbox">
         <Checkbox checked={value?.checked} onChange={onChangeCheckbox} />
-      </div>
+      </div> */}
       <div className="open-close" onClick={onClickOpenClose}>
         {value?.closed
           ? <icons.IconTreeNodeClosed />
