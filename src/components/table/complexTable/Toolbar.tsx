@@ -366,7 +366,7 @@ function NewLineButton(){
   return (
   <div className="table-tool-button" style={{color: '#1890ff'}} onClick={onClick}>
     <a>
-      <PlusOutlined className="icon" style={{fontSize: '14px', marginTop: '-1px'}} />
+      <icons.IconAdd/>
       <span className="text" style={{color: '#1890ff'}}>添加记录</span>
     </a>
   </div>
@@ -428,6 +428,42 @@ function LevelChanger(){
   )
 }
 
+function FileDataLoading(){
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    function startListener(){
+      setLoading(true)
+    }
+
+    function endListener(){
+      setLoading(false);
+    }
+
+    window.addEventListener('loadStart', startListener);
+    window.addEventListener('loadEnd', endListener)
+
+    return ()=>{
+      window.removeEventListener('loadStart', startListener)
+      window.removeEventListener('loadEnd', endListener)
+    }
+  }, [])
+
+  if(!loading){
+    return null;
+  }
+
+  return (
+    <div className="table-tool-button">
+    <a>
+      <span className="icon file-loading"><icons.IconLoading /></span>
+      <span className="text">文件加载中</span>
+    </a>
+  </div>
+  )
+}
+
 export default function Toolbar() {
   const { tableInfo } = useContext(CellRendererContext);
 
@@ -442,6 +478,7 @@ export default function Toolbar() {
         }
         <PatchAction />
         <LevelChanger />
+        <FileDataLoading />
       </div>
       <SaveEventDisplay />
       {/* <MultiClientMutexTool /> */}

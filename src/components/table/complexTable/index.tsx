@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
   useMemo,
+  forwardRef,
 } from 'react';
 
 import { Pagination, Button, message } from 'antd';
@@ -54,6 +55,8 @@ import { DataTypes } from './dataType';
 
 import './ComplexTable.less';
 import { useTranslation } from 'react-i18next';
+import 'react-virtualized/styles.css';
+import {List, CellMeasurer, CellMeasurerCache, AutoSizer} from 'react-virtualized';
 
 //--------------------------------------------------------------------
 // table body
@@ -108,11 +111,12 @@ function TdContent(props) {
   return <div>{value}</div>;
 }
 
-function TR(props) {
+const TR = forwardRef((props, ref) =>{
   const {
     row,
     tdList,
     lastFixedColumnIndex,
+    style={}
   } = props;
 
   const fixedTds = [];
@@ -131,7 +135,7 @@ function TR(props) {
   const trKey = `row-${row.uuid}`;
 
   return (
-    <div id={trKey} className="tr tr-data">
+    <div id={trKey} className="tr tr-data" style={style} ref={ref}>
 
       <div className="fixed-columns">
         <TDInToolColumnMemo row={row} />
@@ -146,7 +150,7 @@ function TR(props) {
       </div>
     </div>
   );
-}
+})
 
 function renderOneColumn(props, DataTypes) {
   const {
@@ -286,8 +290,8 @@ function renderVisibleColumns(columns, rows, options, currentPageRowUUIDs) {
   return renderedColumns;
 }
 
-const LastTRMemo = React.memo((props) => {
-  const { columns, setRows, options } = props;
+const LastTRMemo = React.memo(forwardRef((props, ref) => {
+  const { columns, setRows, options, style={} } = props;
   const {t} = useTranslation();
   function onClick() {
     utils.appendNewRow(setRows, columns);
@@ -306,7 +310,7 @@ const LastTRMemo = React.memo((props) => {
   }
 
   return (
-    <div className="tr tr-plus">
+    <div className="tr tr-plus" style={style} ref={ref}>
       <div className="td column-tool" />
 
       <div className="row-plus" style={{ width: totalWidth }} onClick={onClick}>
@@ -316,7 +320,7 @@ const LastTRMemo = React.memo((props) => {
       </div>
     </div>
   );
-});
+}));
 
 function collectFoldedRowUUIDs(columns, rows) {
   const result = new Set();
@@ -473,7 +477,7 @@ function TableToolBar() {
 
   const table = document.querySelector('.complex-table');
 
-  const tbody = table?.querySelector?.('.tbody');
+  const tbody = table?.querySelector?.('.virtualTbody');
 
   useEffect(() => {
     if (rows?.length && tbody) {
@@ -559,6 +563,11 @@ function TBody(props) {
     getRows,
     getColumns,
   } = useContext(SelectedableBlockContext);
+
+  const cacheRef = useRef(new CellMeasurerCache({
+    fixedWidth: true,
+    minHeight: 32,
+  }))
 
   //   const {
   //     lockState,
@@ -771,16 +780,51 @@ function TBody(props) {
     // await client.setTableNumOfPage(tableUUID, pageSize, localStorage.getItem('userid'));
   }
 
+  function rowRenderer({index, key, parent, style}){
+    const el = trList[index]
+    return (
+      <CellMeasurer
+        cache={cacheRef.current}
+        columnIndex={0}
+        key={key}
+        rowIndex={index}
+        parent={parent}
+      >
+        {
+          ({measure, registerChild}) => {
+            return React.cloneElement(el, {
+              style,
+              ref: registerChild
+            })
+          }
+        }
+      </CellMeasurer>
+    )
+  }
+
+  if(!options.lockFullTable
+    && page >= pages){
+      trList.push(<LastTRMemo columns={columns} setRows={setRows} options={options} />)
+    }
+
   return (
     <>
       <div ref={ref} className="tbody">
-        {trList}
-
-        {
-          !options.lockFullTable
-            && page >= pages
-            && <LastTRMemo columns={columns} setRows={setRows} options={options} />
-        }
+          <AutoSizer>
+            {
+              ({width, height})=>(
+                <List
+                  className='virtualTbody'
+                  deferredMeasurementCache={cacheRef.current}
+                  height={height}
+                  width={width}
+                  rowHeight={cacheRef.current?.rowHeight}
+                  rowCount={trList.length}
+                  rowRenderer={rowRenderer}
+                />
+              )
+            }
+          </AutoSizer>
       </div>
       <div className="table-pager">
         <Pagination

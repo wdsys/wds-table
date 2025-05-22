@@ -1473,7 +1473,7 @@ function UseTableScroller() {
     if (!table) {
       return;
     }
-    const tbody = table.querySelector('.tbody');
+    const tbody = table.querySelector('.virtualTbody');
 
     scrollTo(tbody, 0, 500);
   }
@@ -1483,7 +1483,7 @@ function UseTableScroller() {
     if (!table) {
       return;
     }
-    const tbody = table.querySelector('.tbody');
+    const tbody = table.querySelector('.virtualTbody');
     const sh = tbody.scrollHeight;
 
     scrollTo(tbody, sh, 500);

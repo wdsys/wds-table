@@ -244,10 +244,11 @@
 
 .tbody {
   position: static;
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
   padding-right: 18px;
-  padding-bottom: 30px;
+  // padding-bottom: 30px;
   max-width: 100%;
+  flex: 1 1 auto;
   overflow: scroll;
 
   display: flex;
@@ -262,6 +263,12 @@
   -ms-overflow-style: none;
   /* Internet Explorer 10+ */
   scrollbar-width: none;
+
+  .virtualTbody {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 
   /* Firefox */
   &::-webkit-scrollbar {

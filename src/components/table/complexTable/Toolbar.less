@@ -105,6 +105,19 @@
   &.active-button svg path {
     fill: rgb(207, 86, 89);
   }
+
+  .file-loading {
+    animation: rotate 1.2s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .search-box {

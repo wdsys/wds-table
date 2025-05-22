@@ -5,11 +5,13 @@ import { ConfigProvider } from 'antd';
 import { TfiMenu } from "react-icons/tfi";
 import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
-
+import { message } from '@tauri-apps/plugin-dialog';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
 
 import { TableManager } from '@/utils/tableManager';
+import getDefaultData from './defaultData';
 
 export default function TablePage(){
 
@@ -20,19 +22,23 @@ export default function TablePage(){
 
     const [params] = useSearchParams();
     const path = params.get('file')
-    const [data, setData] = useState()
+    const [data, setData] = useState(getDefaultData());
     const tableManager = useRef(new TableManager());
     const filename = path?.split?.('\\')?.pop()
 
     async function getTableJson(p: string) {
+        const endEvent = new CustomEvent('loadEnd');
         try {
+            const startEvent = new CustomEvent('loadStart');
+            window.dispatchEvent(startEvent);
             // Create new session and extract zip
             await tableManager.current.createSession(p);
             await tableManager.current.extractZipToSession(p);
             
             // Load table data
             const tableData = await tableManager.current.getTableData();
-            setData(tableData);
+            setData(tableData);        
+            window.dispatchEvent(endEvent);
             
             // 获取到文件后 开始记录history
             setTimeout(()=>{
@@ -42,6 +48,9 @@ export default function TablePage(){
 
         } catch (error) {
             console.error('Failed to load table:', error);
+            window.dispatchEvent(endEvent);
+            await message('文件格式不正确！', { title: 'WDS-Table', kind: 'error' });
+            await getCurrentWindow().destroy();
         }
     }
 
