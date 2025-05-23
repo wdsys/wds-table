@@ -7,10 +7,12 @@ import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
 import { message } from '@tauri-apps/plugin-dialog';
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
 
 import { TableManager } from '@/utils/tableManager';
+import { addRecentFile } from '@/utils/recentFiles'
 import getDefaultData from './defaultData';
 
 export default function TablePage(){
@@ -67,6 +69,11 @@ export default function TablePage(){
     useEffect(()=>{
         if(path){
             getTableJson(path)
+            addRecentFile(path, filename||'').then(()=>{
+                WebviewWindow.getByLabel('main').then(mainWebview=>{
+                    mainWebview?.emit?.('file-updated');
+                })
+            })
         }
     }, [path])
 

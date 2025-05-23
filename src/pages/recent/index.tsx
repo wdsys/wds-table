@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { save, message } from '@tauri-apps/plugin-dialog';
 import { exists } from '@tauri-apps/plugin-fs';
+import { emit, listen } from '@tauri-apps/api/event';
 // import { writeFile } from '@tauri-apps/plugin-fs';
 import { useTranslation } from 'react-i18next';
 import { getRecentFiles } from '@/utils/recentFiles';
 import type { RecentFile } from '@/utils/recentFiles';
-import { addRecentFile } from '@/utils/recentFiles';
 import { generateWindowLabel, createInitialTableFile } from '@/utils/index'
 import bg from './preview.png'
 
@@ -59,9 +59,6 @@ export default function Recent(){
         webview.once('tauri://error', (e) => {
             console.error(e);
         });
-
-        await addRecentFile(recentItem.path, recentItem.filename);
-        loadRecentFiles();
     }
 
     async function openNewFileInWindow() {
@@ -98,10 +95,6 @@ export default function Recent(){
                 decorations: false,
             });
     
-            // 添加到最近文件记录
-            await addRecentFile(filePath, filename);
-            await loadRecentFiles(); // 刷新列表
-    
             // 监听窗口事件
             webview.once('tauri://created', () => {
                 console.log('webview window created');
@@ -117,7 +110,18 @@ export default function Recent(){
 
     useEffect(() => {
         loadRecentFiles();
-    }, []);
+        // 监听来自其他窗口的消息
+        const unlisten = listen('file-updated', (event) => {
+          // event.payload 包含传递的数据
+          console.log('File updated:', event.payload);
+          // 重新加载最近文件列表
+          loadRecentFiles();
+        });
+    
+        return () => {
+          unlisten.then(fn => fn()); // 清理监听器
+        };
+      }, []);
 
     return (
         <div className={styles.ctn}>

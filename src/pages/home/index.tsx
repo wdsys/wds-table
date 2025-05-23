@@ -9,7 +9,6 @@ import { message } from '@tauri-apps/plugin-dialog';
 import { TbSettings } from "react-icons/tb";
 import { selectFileByDialog } from '@/utils/file';
 import { generateWindowLabel } from '@/utils/index'
-import { addRecentFile } from '@/utils/recentFiles';
 import {useTranslation} from 'react-i18next';
 import logo from './wds.logo.svg'
 
@@ -60,9 +59,6 @@ export default function Home(){
             dragDropEnabled: false,
             "decorations": false
         });
-
-        // 添加到最近文件记录
-        await addRecentFile(filePath as string, filename as string);
 
         // 监听窗口事件
         webview.once('tauri://created', () => {
