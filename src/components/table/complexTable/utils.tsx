@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { v4 as uuidv4 } from 'uuid';
+import CalcFoldedRowUUIDsWorker from '../workers/calcFoldedRowUUIDs.ts?worker';
 
 export function clamp(value, min, max) {
   if (value < min) {
@@ -817,115 +818,124 @@ export function getContentEditableText(elem) {
 //--------------------------------------------------------------------
 // Tree Operations
 //--------------------------------------------------------------------
-
+interface TreeNode {
+  row: any;
+  level: number;
+  closed: boolean;
+  parent: TreeNode | null;
+  childs: TreeNode[];
+}
 export function createTreeFromTable(columns, rows) {
-  if (!columns || !rows?.length) {
-    return null;
-  }
+    // Early returns for invalid input
+    if (!columns?.length || !rows?.length) return null;
 
-  let treeNodeColumn = null;
-  for (const col of columns) {
-    if (col.dataType === 'treeNode') {
-      treeNodeColumn = col;
-      break;
-    }
-  }
+    // Find treeNode column using find instead of for loop
+    const treeNodeColumn = columns.find(col => col.dataType === 'treeNode');
+    if (!treeNodeColumn) return null;
+  
+    const colUUID = treeNodeColumn.uuid;
+    const roots: TreeNode[] = [];
+    const nodeStack: TreeNode[] = [];
 
-  if (!treeNodeColumn) {
-    return null;
-  }
-
-  const roots = [];
-  let lastNode = null;
-
-  for (let i = 0; i < rows.length; i += 1) {
-    const row = rows[i];
-    const value = row?.fields?.[treeNodeColumn.uuid] || {};
-    const {
-      level = 0,
-      closed = false,
-    } = value;
-
-    const node = {
-      row,
-      level,
-      closed: !!closed,
+    // Process first row
+    const firstRow = rows[0];
+    const firstValue = firstRow?.fields?.[colUUID] || {};
+    const firstNode: TreeNode = {
+      row: firstRow,
+      level: firstValue.level || 0,
+      closed: !!firstValue.closed,
       parent: null,
-      childs: [],
+      childs: []
     };
+    roots.push(firstNode);
+    nodeStack.push(firstNode);
 
-    if (i === 0) {
-      roots.push(node);
-      lastNode = node;
-      continue;
-    }
-
-    let myParent = null;
-    let tmpNode = lastNode;
-    let loop = true;
-
-    while (loop) {
-      if (level > tmpNode.level) { // 比lastNode更深
-        myParent = tmpNode;
-        loop = false;
-        break;
-      } else if (level === tmpNode.level) { // 和lastNode平级
-        myParent = tmpNode.parent;
-        loop = false;
-        break;
+    // Process remaining rows using stack
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const value = row?.fields?.[colUUID] || {};
+      const currentLevel = value.level || 0;
+  
+      const node: TreeNode = {
+        row,
+        level: currentLevel,
+        closed: !!value.closed,
+        parent: null,
+        childs: []
+      };
+  
+      // Pop stack until we find the parent
+      while (nodeStack.length && nodeStack[nodeStack.length - 1].level >= currentLevel) {
+        nodeStack.pop();
       }
-
-      // 比lastNode要浅
-      if (tmpNode.parent) {
-        tmpNode = tmpNode.parent;
+  
+      if (nodeStack.length) {
+        // Found parent in stack
+        const parent = nodeStack[nodeStack.length - 1];
+        node.parent = parent;
+        parent.childs.push(node);
       } else {
-        loop = false;
-        break;
+        // No parent found, this is a root node
+        roots.push(node);
       }
+  
+      nodeStack.push(node);
     }
-
-    if (myParent) {
-      node.parent = myParent;
-      myParent.childs.push(node);
-    } else {
-      roots.push(node);
-    }
-
-    lastNode = node;
-  }
-
-  return roots;
+  
+    return roots;
 }
 
-export function findTreeNodeInRoots(roots, rowUUID) {
-  if (!roots?.length) {
-    return null;
+export function findTreeNodeInRoots(roots: TreeNode[], targetUUID: string): TreeNode | null {
+  if (!roots?.length || !targetUUID) {
+      return null;
   }
 
-  for (const root of roots) {
-    if (root.row.uuid === rowUUID) {
-      return root;
-    }
-
-    const node = findTreeNodeInRoots(root.childs, rowUUID);
-    if (node) {
-      return node;
-    }
+  // Use stack for iteration instead of recursion
+  const stack: TreeNode[] = [...roots];
+  
+  while (stack.length > 0) {
+      const node = stack.pop()!;
+      
+      // Check current node
+      if (node.row.uuid === targetUUID) {
+          return node;
+      }
+      
+      // Add children to stack in reverse order
+      // This maintains the same traversal order as the recursive version
+      if (node.childs?.length) {
+          for (let i = node.childs.length - 1; i >= 0; i--) {
+              stack.push(node.childs[i]);
+          }
+      }
   }
 
   return null;
 }
+const visibilityCache = new WeakMap<TreeNode, boolean>();
+export function isTreeNodeVisible(node: TreeNode): boolean {
+  // Check cache first
+  if (visibilityCache.has(node)) {
+      return visibilityCache.get(node)!;
+  }
 
-export function isTreeNodeVisible(node) {
+  // Root node is always visible
   if (!node.parent) {
-    return true;
+      visibilityCache.set(node, true);
+      return true;
   }
 
-  if (node.parent.closed) {
-    return false;
+  let currentNode = node;
+  while (currentNode.parent) {
+      if (currentNode.parent.closed) {
+          visibilityCache.set(node, false);
+          return false;
+      }
+      currentNode = currentNode.parent;
   }
 
-  return isTreeNodeVisible(node.parent);
+  visibilityCache.set(node, true);
+  return true;
 }
 
 export function getTreeNodeAllRows(node, rows) {
@@ -1124,4 +1134,49 @@ export function generateInitOptions() {
       color: i.color,
     },
   }));
+}
+
+let worker: Worker | null = null;
+let currentPromise: Promise<Set<string>> | null = null;
+let lastCallTime = 0;
+const CACHE_TIME = 100; // 100ms内的调用复用同一个Promise
+
+export function collectFoldedRowUUIDs(columns = [], rows = []): Promise<Set<string>> {
+  const now = Date.now();
+  
+  // 如果距离上次调用时间很近，复用Promise
+  if (currentPromise && (now - lastCallTime) < CACHE_TIME) {
+    return currentPromise;
+  }
+
+  lastCallTime = now;
+  currentPromise = new Promise((resolve) => {
+    const treeNodeColumn = columns.find(col => col.dataType === 'treeNode');
+    if (!treeNodeColumn) {
+      resolve(new Set());
+      return;
+    }
+
+    // 创建 worker
+    if (!worker) {
+      worker = new CalcFoldedRowUUIDsWorker();
+    }
+
+    worker.onmessage = ({ data }) => {
+      const foldedUUIDs = new Set(data);
+      worker?.terminate();
+      worker = null;
+      currentPromise = null;  // 清除Promise缓存
+      resolve(foldedUUIDs);
+    };
+
+    // 发送数据到 worker
+    worker.postMessage({
+      columns,
+      rows,
+      treeNodeUUID: treeNodeColumn.uuid
+    });
+  });
+
+  return currentPromise;
 }

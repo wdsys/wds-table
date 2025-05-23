@@ -7,6 +7,7 @@ import React, {
   useRef,
   useContext,
   useMemo,
+  useState,
 } from 'react';
 
 import { message } from 'antd';
@@ -461,20 +462,6 @@ export function useRelatedRequirementsUpdater() {
 // useRowHighlighter
 //--------------------------------------------------------------------
 
-function collectFoldedRowUUIDs(columns = [], rows = []) {
-  const result = new Set();
-
-  const roots = utils.createTreeFromTable(columns, rows);
-  for (const row of rows) {
-    const node = utils.findTreeNodeInRoots(roots, row.uuid);
-    if (node && !utils.isTreeNodeVisible(node)) {
-      result.add(row.uuid);
-    }
-  }
-
-  return result;
-}
-
 export function useRowHighlighter() {
   const {
     rows,
@@ -494,7 +481,14 @@ export function useRowHighlighter() {
   const refFilterRows = useRef();
   refFilterRows.current = [];
 
-  const foldedRowUUIDs = useMemo(() => collectFoldedRowUUIDs(columns, rows), [columns, rows]);
+  const [foldedRowUUIDs, setFoldedRowUUIDs] = useState(new Set());
+  // const foldedRowUUIDs = useMemo(() => collectFoldedRowUUIDs(columns, rows), [columns, rows]);
+
+  useEffect(() => {
+    utils.collectFoldedRowUUIDs(columns, rows).then(result => {
+      setFoldedRowUUIDs(result);
+    });
+  }, [columns, rows]);
 
   // 是否有图片需要加载，如需加载，需要等待加载后滚动
   const refIsLoadingImg = useRef(false);
@@ -773,7 +767,8 @@ export function scrollY(delta) {
 export function useKeyboardScroller() {
   function onKeyDown(e) {
     const body = document.querySelector('body');
-    if (document.activeElement !== body) {
+    const virtualTbody = document.querySelector('.virtualTbody')
+    if (document.activeElement !== body && document.activeElement !== virtualTbody) {
       return;
     }
 
@@ -1254,7 +1249,6 @@ export function useCopySelectedRowsToClipboard() {
   projectIdRef.current = projectId;
 
   async function onCopyToClipboard() {
-    debugger;
     const treeNodeColumn = columnsRef.current?.find?.(col=>col?.dataType === 'rowIndex'); // utils.getTreeNodeColumn(columnsRef.current);
     if (!treeNodeColumn) {
       return;

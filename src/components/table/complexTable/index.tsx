@@ -322,21 +322,6 @@ const LastTRMemo = React.memo(forwardRef((props, ref) => {
   );
 }));
 
-function collectFoldedRowUUIDs(columns, rows) {
-  const result = new Set();
-
-  const roots = utils.createTreeFromTable(columns, rows);
-
-  for (const row of rows) {
-    const node = utils.findTreeNodeInRoots(roots, row.uuid);
-    if (node && !utils.isTreeNodeVisible(node)) {
-      result.add(row.uuid);
-    }
-  }
-
-  return result;
-}
-
 function syncColumnWidthsToDOM(columns) {
   if (!columns?.length) {
     return;
@@ -587,7 +572,14 @@ function TBody(props) {
   //   syncColumnWidthsToAllRows(refColumns.current);
   // }, [colWidthsJSON, rows]);
 
-  const foldedRowUUIDs = useMemo(() => collectFoldedRowUUIDs(columns, rows), [columns, rows]);
+  const [foldedRowUUIDs, setFoldedRowUUIDs] = useState(new Set());
+  // const foldedRowUUIDs = useMemo(() => collectFoldedRowUUIDs(columns, rows), [columns, rows]);
+
+  useEffect(() => {
+      utils.collectFoldedRowUUIDs(columns, rows).then(result => {
+        setFoldedRowUUIDs(result);
+      })
+  }, [columns, rows]);
 
   const filteredRowUUIDs = new Set();
   for (let i = 0; i < rows.length; i += 1) {
