@@ -10,7 +10,7 @@ type TreeNodeValue = {
     };
   }
   
-self.onmessage = ({ data: { columns, rows, treeNodeUUID } }) => {
+self.onmessage = ({ data: { rows, treeNodeUUID } }) => {
     const foldedUUIDs = new Set<string>();
     const levelStack = new Map<number, { closed: boolean }>();
 

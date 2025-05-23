@@ -1,11 +1,12 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import {useEffect} from 'react';
 import {listen} from '@tauri-apps/api/event';
-import Home from '@/pages/home';
-import Recent from  '@/pages/recent';
-import Table from '@/pages/table';
-import Template from '@/pages/template';
-import Setting from '@/pages/settings';
+// import Home from '@/pages/home';
+// import Recent from  '@/pages/recent';
+// import Table from '@/pages/table';
+// import Template from '@/pages/template';
+// import Setting from '@/pages/settings';
 import { useTranslation } from "react-i18next";
 import { getConfig } from "./utils";
 import withTitleBar from '@/components/withTitleBar';
@@ -14,6 +15,26 @@ import withTitleBar2 from "@/components/withTitleBar2";
 import '@/locale/i18n';
 import './App.css'
 import 'antd/dist/antd.css';
+
+// 懒加载路由组件
+const Home = lazy(() => import('@/pages/home'));
+const Recent = lazy(() => import('@/pages/recent'));
+const Table = lazy(() => import('@/pages/table'));
+const Template = lazy(() => import('@/pages/template'));
+const Setting = lazy(() => import('@/pages/settings'));
+
+// Loading 组件
+const LoadingComponent = () => (
+  <div style={{ 
+    width: '100%', 
+    height: '100vh', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  }}>
+    loading
+  </div>
+);
 
 interface ContextMenuEvent extends MouseEvent {
   preventDefault: () => void;
@@ -75,16 +96,18 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route index element={<Navigate to='/home/recent'/>}></Route>
-        <Route path='home' element={<HomeWithTitleBar />}>
-          <Route path='recent' element={<Recent/>} />
-          <Route path='template' element={<Template />} />
-        </Route>
+      <Suspense fallback={<LoadingComponent />}>
+        <Routes>
+          <Route index element={<Navigate to='/home/recent'/>}></Route>
+          <Route path='home' element={<HomeWithTitleBar />}>
+            <Route path='recent' element={<Recent/>} />
+            <Route path='template' element={<Template />} />
+          </Route>
 
-        <Route path='table' element={<TableWithTitleBar />} />
-        <Route path='/settings' element={<Setting />} />
-      </Routes>
+          <Route path='table' element={<TableWithTitleBar />} />
+          <Route path='/settings' element={<Setting />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
