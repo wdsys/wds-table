@@ -294,29 +294,14 @@ function handleTableBackBottom() {
   window.dispatchEvent(event);
 }
 
-function collectFoldedRowUUIDs(columns, rows) {
-  const result = new Set();
-
-  const roots = utils.createTreeFromTable(columns, rows);
-
-  for (const row of rows) {
-    const node = utils.findTreeNodeInRoots(roots, row.uuid);
-    if (node && !utils.isTreeNodeVisible(node)) {
-      result.add(row.uuid);
-    }
-  }
-
-  return result;
-}
-
 function NewLineButton(){
 
   const { setRows, columns, options, pagerState, rows,
     setPagerState } = useContext(CellRendererContext);
 
-  function onClick(){
+  async function onClick(){
 
-    const foldedRowUUIDs = collectFoldedRowUUIDs(columns, rows);
+    const foldedRowUUIDs = await utils.collectFoldedRowUUIDs(columns, rows);
 
     const filteredRowUUIDs = new Set();
     for (let i = 0; i < rows.length; i += 1) {
