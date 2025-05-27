@@ -3,6 +3,8 @@ import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { save, message } from '@tauri-apps/plugin-dialog';
 import { exists } from '@tauri-apps/plugin-fs';
 import { listen } from '@tauri-apps/api/event';
+import { revealItemInDir } from '@tauri-apps/plugin-opener'
+import {Menu} from '@tauri-apps/api/menu';
 // import { writeFile } from '@tauri-apps/plugin-fs';
 import { useTranslation } from 'react-i18next';
 import { getRecentFiles } from '@/utils/recentFiles';
@@ -108,6 +110,35 @@ export default function Recent(){
         }
     }
 
+    async function revealInFileExplorer(path: string){
+        try {
+            // 在 Windows 上使用 explorer 来选中文件
+            await revealItemInDir(path);
+        } catch (error) {
+            console.error('Failed to reveal file:', error);
+            await message(t('Failed to open file location'), { 
+                title: 'WDS-Table', 
+                kind: 'error' 
+            });
+        }
+    }
+
+    async function onContextMenu(event: React.MouseEvent, recentItem: RecentFile){
+        event.preventDefault(); // 阻止默认右键菜单
+
+        const menu = await Menu.new({
+            items: [
+                {
+                    id: 'reveal',
+                    text: t('Reveal in File Explorer'),
+                    action: () => revealInFileExplorer(recentItem.path)
+                }
+            ]
+        });
+    
+        menu.popup();
+    }
+
     useEffect(() => {
         loadRecentFiles();
         // 监听来自其他窗口的消息
@@ -134,7 +165,11 @@ export default function Recent(){
 
             {
                 recentFiles.map(i=>(
-                    <div className={styles.item} onClick={()=>openRecentFileInWindow(i)}>
+                    <div className={styles.item}
+                        onContextMenu={(e)=>{
+                            onContextMenu(e, i)
+                        }}
+                     onClick={()=>openRecentFileInWindow(i)}>
                         <div className={styles.bgCtn}>
                             <img src={bg} alt='preview' />
                         </div>

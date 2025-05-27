@@ -73,7 +73,8 @@ const zh = {
     "new sort rule": "新增排序规则",
     "clear sort rule": "清除排序规则",
     "save succcess": "保存成功",
-    "File not found": "文件不存在"
+    "File not found": "文件不存在",
+    "Reveal in File Explorer": "在文件管理器中显示"
 }
 
 export default zh;

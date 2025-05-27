@@ -74,7 +74,8 @@ const en = {
     "no sort rule": "No Sort Rules",
     "new sort rule": "New Sort Rule",
     "clear sort rule": "Clear Sort Rules",
-    "File not found": "File not found"
+    "File not found": "File not found",
+    "Reveal in File Explorer": "Reveal in File Explorer"
 }
 
 export default en
