@@ -44,7 +44,7 @@ pub fn run() {
                     .center()
                     .min_inner_size(970.0, 600.0)
                     .drag_and_drop(false)
-                    .resizable(false)
+                    .resizable(true)
                     .build()
                     .unwrap();  
                 }
