@@ -2,7 +2,7 @@
 mod utils;
 use tauri::{
     menu::{Menu, MenuItem},
-    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent}, Manager
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent}, Manager, WebviewUrl
 };
 use crate::utils::{ generate_window_label, handle_file_associations};
 
@@ -68,7 +68,7 @@ pub fn run() {
             let _tray = TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
-                .show_menu_on_left_click(true)
+                .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id.as_ref() {
                     "quit" => {
                         println!("quit menu item was clicked");
@@ -90,6 +90,15 @@ pub fn run() {
                         if let Some(window) = app.get_webview_window("main") {
                             let _ = window.show();
                             let _ = window.set_focus();
+                        } else {
+                            tauri::WebviewWindowBuilder::new(app, "main", WebviewUrl::App(format!("/").into()))
+                            .decorations(false)
+                            .center()
+                            .min_inner_size(970.0, 600.0)
+                            .drag_and_drop(false)
+                            .resizable(false)
+                            .build()
+                            .unwrap(); 
                         }
                     }
                     _ => {
