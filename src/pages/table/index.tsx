@@ -5,9 +5,10 @@ import { ConfigProvider } from 'antd';
 import { TfiMenu } from "react-icons/tfi";
 import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
-import { message } from '@tauri-apps/plugin-dialog';
+import { message, save } from '@tauri-apps/plugin-dialog';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import {Menu} from '@tauri-apps/api/menu';
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
 
@@ -61,9 +62,54 @@ export default function TablePage(){
         await tableManager.current.updateTableData(data)
         try {
             await tableManager.current.saveSessionToZip();
+
+            const event = new CustomEvent('autoSaveTableDone');
+            window.dispatchEvent(event);
         } catch (error) {
             console.error('Failed to save table:', error);
         }
+    }
+
+    async function showMenu(){
+        const menu = await Menu.new({
+            items: [
+                {
+                    id: 'save',
+                    text: '保存',
+                    action: ()=>{
+                        const detail = { reason: 'manual-save' };
+                        const event = new CustomEvent('saveTable', { detail });
+                        window.dispatchEvent(event);
+                    }
+                },
+                {
+                    id: 'saveAs',
+                    text: '另存为',
+                    action: async ()=>{
+                        try {
+                            const filePath = await save({
+                                filters: [{
+                                    name: 'WDS Table',
+                                    extensions: ['table']
+                                }]
+                            });
+                            
+                            if (filePath) {
+                                await tableManager.current.saveAs(filePath);
+                            }
+                        } catch (error) {
+                            console.error('Failed to save as:', error);
+                            await message('保存失败！', { 
+                                title: 'WDS-Table', 
+                                kind: 'error' 
+                            });
+                        }
+                    }
+                }
+            ]
+        })
+
+        menu.popup();
     }
     
     useEffect(()=>{
@@ -83,7 +129,7 @@ export default function TablePage(){
                 {/* <div className={styles.toolbar}>
                     <Toolbar />
                 </div> */}
-                <div className={styles.menu}><TfiMenu/></div>
+                <div className={styles.menu} onClick={showMenu}><TfiMenu/></div>
                 <div className={styles.title}>{filename}</div>
                 <div className={styles.tableCtn}>
                     <Table fileData={data} filename={filename} 

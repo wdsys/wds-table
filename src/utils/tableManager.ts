@@ -100,6 +100,38 @@ export class TableManager {
     await writeFile(this.currentSession.originalFile, content);
   }
 
+  async saveAs(newPath: string): Promise<void> {
+    if (!this.currentSession) throw new Error('No active session');
+
+    const zip = new JSZip();
+    
+    // Add data.json
+    const dataContent = await readTextFile(this.currentSession.dataPath);
+    zip.file('data.json', dataContent);
+
+    // Add attachments
+    const attachmentsFolder = zip.folder('attachments');
+    if (attachmentsFolder) {
+      const files = await readDir(this.currentSession.attachmentsPath);
+      for (const file of files) {
+        const content = await readFile(
+          await join(this.currentSession.attachmentsPath, file.name)
+        );
+        attachmentsFolder.file(file.name, content);
+      }
+    }
+
+    // Generate and save zip to new path
+    const content = await zip.generateAsync({
+      type: 'uint8array',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 9 }
+    });
+
+    // Save to new path and update current session
+    await writeFile(newPath, content);
+  }
+
   async getTableData(): Promise<any> {
     if (!this.currentSession) throw new Error('No active session');
     const content = await readTextFile(this.currentSession.dataPath);
