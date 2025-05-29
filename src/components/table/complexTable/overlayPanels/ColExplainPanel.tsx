@@ -32,6 +32,8 @@ import {
   LocalStateContext,
 } from '../contexts';
 
+import { saveBlobToFile } from '@/utils/file'
+
 import { DataTypes } from '../dataType';
 import useToggleablePanel from './useToggleablePanel';
 import * as icons from '../SvgIcons';
@@ -49,66 +51,57 @@ function ImageInCell(props) {
   } = props;
   const ref = useRef(null);
   const {
-    getAttachment,
-  } = useContext(InterfaceFunctionContext);
+    getAttachment, tableManager,
+  } = useContext(CellRendererContext);
 
   async function loadImage() {
-    let img;
-
-    try {
-      let blob = await getAttachment(projectId, file.digest);
-
-      const isSVG = file?.name?.endsWith('.svg');
-      if (isSVG) {
-        blob = new Blob([blob], { type: 'image/svg+xml' });
-      }
-
-      img = await utils.blob2img(blob);
-    } catch (err) {
-      console.error(`cannot load attachment image ${file.digest}`, err);
-      return;
-    }
+    const image = new Image();
+    image.src = await getAttachment(`${file.uuid}-${file.name}`);
 
     const div = ref.current;
-    if (img && div) {
+    if (image.src && div) {
+
       while (div.childElementCount) {
         div.removeChild(div.firstChild);
       }
-      console.log(img);
-      img.className = 'explain-img';
 
-      div.appendChild(img);
+      image.className = 'explain-img';
+
+      div.appendChild(image);
     }
   }
 
   useEffect(() => {
     loadImage();
-  }, [file.digest]);
+  }, [file.uuid]);
 
   // 下载文件
-  function onClickDownload() {
-    // 207 附件下载
-    if (!file.digest) {
-      return;
-    }
-    // eslint-disable-next-line consistent-return
-    getAttachment(projectId, file.digest).then(async (blob) => {
-      try {
-        const data = await blobToJson(blob);
-        if (data?.code === 2003) { return message.error(data?.message); }
-      } catch (e) {
-        // console.log(e);
+  async function onClickDownload() {
+    try {
+      // Get file blob from temp directory
+      const blob = await tableManager.getAttachmentBlob(`${file.uuid}-${file.name}`);
+      
+      if (!blob) {
+        message.error('Failed to download file');
+        return;
       }
-
-      utils.downloadFile(blob, file.name);
-    });
+  
+      // Save the blob to user selected location
+      const filePath = await saveBlobToFile(file.name, blob);
+      if(filePath){
+        message.success('File downloaded successfully');
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      message.error('Failed to download file');
+    }
   }
 
   // 预览文件
-  async function onClickViewFile() {
-    const blob = await getAttachment(projectId, file.digest);
-    await previewFile(file, blob);
-  }
+  // async function onClickViewFile() {
+  //   const blob = await getAttachment(projectId, file.digest);
+  //   await previewFile(file, blob);
+  // }
 
   // 删除文件
   function deleteFile() {
@@ -128,16 +121,16 @@ function ImageInCell(props) {
       ),
       onClick: () => { onClickDownload(); },
     },
-    {
-      key: '1',
-      label: (
-        <div>
-          <ContainerOutlined style={{ marginRight: 5 }} />
-          预览
-        </div>
-      ),
-      onClick: () => { onClickViewFile(file); },
-    },
+    // {
+    //   key: '1',
+    //   label: (
+    //     <div>
+    //       <ContainerOutlined style={{ marginRight: 5 }} />
+    //       预览
+    //     </div>
+    //   ),
+    //   onClick: () => { onClickViewFile(file); },
+    // },
     {
       key: '2',
       label: (
@@ -173,36 +166,29 @@ function ImageInCell(props) {
 // 图片上传
 function UploadImage(props) {
   const { explainFile, setExplainFile, disabled } = props;
-  const { projectId } = useContext(CellRendererContext);
-  const { putAttachment } = useContext(InterfaceFunctionContext);
+  const { addAttachment } = useContext(CellRendererContext);
 
   async function uploadFile(file) {
-    const result = await putAttachment(projectId, file);
-    if (result.digest === file.digest) {
-      setExplainFile(file);
-    }
+    const relativePath = await addAttachment(file.uuid, file.file);
+    setExplainFile({
+      name: file.name,
+      uuid: file.uuid,
+    });
   }
 
-  function onGotFiles(files1) {
+  async function onGotFiles(files1) {
     for (const file of files1) {
       const { name, size, type } = file;
 
-      utils.readLocalFile(file, 'arrayBuffer').then(async (data) => {
-        const hash = sha1.create();
-        hash.update(data);
-        const digest = hash.hex();
-        const fileInfo = {
+      const fileInfo = {
           file,
           name,
           size,
           type,
-          digest,
-        };
+          uuid: uuidv4(),
+      };
 
-        await uploadFile(fileInfo);
-      }).catch((err) => {
-        console.error(`failed to read file ${file.name}:`, err);
-      });
+      await uploadFile(fileInfo);
     }
   }
 
@@ -274,10 +260,9 @@ function UploadImage(props) {
       }
 
       {
-        explainFile?.digest && (
+        explainFile?.uuid && (
           <ImageInCell
             file={explainFile}
-            projectId={projectId}
             disabled={disabled}
             onDeleteFile={onDeleteFile}
           />

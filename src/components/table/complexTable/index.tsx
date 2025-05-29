@@ -116,7 +116,9 @@ const TR = forwardRef((props, ref) =>{
     row,
     tdList,
     lastFixedColumnIndex,
-    style={}
+    style={},
+    measure,
+    onInput
   } = props;
 
   const fixedTds = [];
@@ -134,8 +136,12 @@ const TR = forwardRef((props, ref) =>{
 
   const trKey = `row-${row.uuid}`;
 
+  useEffect(()=>{
+    measure?.();
+  }, [tdList])
+
   return (
-    <div id={trKey} className="tr tr-data" style={style} ref={ref}>
+    <div id={trKey} className="tr tr-data" style={style} ref={ref} onInput={onInput}>
 
       <div className="fixed-columns">
         <TDInToolColumnMemo row={row} />
@@ -549,6 +555,8 @@ function TBody(props) {
     getColumns,
   } = useContext(SelectedableBlockContext);
 
+  const listRef = useRef();
+
   const cacheRef = useRef(new CellMeasurerCache({
     fixedWidth: true,
     minHeight: 32,
@@ -737,6 +745,10 @@ function TBody(props) {
     };
   }, []);
 
+  useEffect(()=>{
+    listRef.current?.recomputeRowHeights?.();
+  }, [trList])
+
   // useEffect(() => {
   //   // sheet改变，pageSize设置
   //   if (tableUUID) {
@@ -786,6 +798,10 @@ function TBody(props) {
           ({measure, registerChild}) => {
             return React.cloneElement(el, {
               style,
+              measure,
+              onInput: ()=>{
+                measure();
+              },
               ref: registerChild
             })
           }
@@ -806,6 +822,7 @@ function TBody(props) {
             {
               ({width, height})=>(
                 <List
+                  ref={listRef}
                   className='virtualTbody'
                   deferredMeasurementCache={cacheRef.current}
                   height={height}
