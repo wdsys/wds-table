@@ -14,12 +14,13 @@ export interface TableSession {
 
 export class TableManager {
   private currentSession: TableSession | null = null;
+  private static tempDirName = 'wds-table-temp';
 
   async createSession(originalFile: string): Promise<TableSession> {
     // Create unique session ID
     const sessionId = uuidv4();
     const tempBasePath = await tempDir();
-    const sessionPath = await join(tempBasePath, sessionId);
+    const sessionPath = await join(tempBasePath, TableManager.tempDirName, sessionId);
     
     // Create temp directory structure
     const dataPath = await join(sessionPath, 'data.json');
@@ -146,54 +147,66 @@ export class TableManager {
     await writeFile(this.currentSession.dataPath, content);
   }
 
-    /**
-   * 上传附件到单元格
-   * @param file 文件对象
-   * @returns 返回附件在临时目录中的路径
-   */
-    async uploadAttachment(uuid: string, file: File): Promise<string> {
+  async cleanup(){
+      if (this.currentSession) {
+        try{
+          await remove(this.currentSession.tempPath, {
+            recursive: true
+          })
+        }catch(e){
+          console.log(e)
+        }
+      }
+  }
 
-        if (!this.currentSession) {
-          throw new Error('No active session');
-        }
+  /**
+  * 上传附件到单元格
+  * @param file 文件对象
+  * @returns 返回附件在临时目录中的路径
+  */
+  async uploadAttachment(uuid: string, file: File): Promise<string> {
+
+    if (!this.currentSession) {
+      throw new Error('No active session');
+    }
+  
+    try {
+      // 生成唯一文件名避免冲突
+      const uniqueFileName = `${uuid}-${file.name}`;
+      const attachmentPath = await join(this.currentSession.attachmentsPath, uniqueFileName);
+
+      // 读取文件内容
+      const arrayBuffer = await file.arrayBuffer();
+      const content = new Uint8Array(arrayBuffer);
+
+      // 写入临时目录
+      await writeFile(attachmentPath, content);
+
+      // 返回相对路径用于存储在单元格中
+      return uniqueFileName;
+    } catch (error) {
+      console.error('Failed to upload attachment:', error);
+      throw error;
+    }
+  }
     
-        try {
-          // 生成唯一文件名避免冲突
-          const uniqueFileName = `${uuid}-${file.name}`;
-          const attachmentPath = await join(this.currentSession.attachmentsPath, uniqueFileName);
-    
-          // 读取文件内容
-          const arrayBuffer = await file.arrayBuffer();
-          const content = new Uint8Array(arrayBuffer);
-    
-          // 写入临时目录
-          await writeFile(attachmentPath, content);
-    
-          // 返回相对路径用于存储在单元格中
-          return uniqueFileName;
-        } catch (error) {
-          console.error('Failed to upload attachment:', error);
-          throw error;
-        }
-      }
-    
-      /**
-       * 删除单元格附件
-       * @param fileName 文件名
-       */
-      async removeAttachment(fileName: string): Promise<void> {
-        if (!this.currentSession) {
-          throw new Error('No active session');
-        }
-    
-        try {
-          const filePath = await join(this.currentSession.attachmentsPath, fileName);
-          await remove(filePath);
-        } catch (error) {
-          console.error('Failed to remove attachment:', error);
-          throw error;
-        }
-      }
+  /**
+  * 删除单元格附件
+  * @param fileName 文件名
+  */
+  async removeAttachment(fileName: string): Promise<void> {
+    if (!this.currentSession) {
+      throw new Error('No active session');
+    }
+
+    try {
+      const filePath = await join(this.currentSession.attachmentsPath, fileName);
+      await remove(filePath);
+    } catch (error) {
+      console.error('Failed to remove attachment:', error);
+      throw error;
+    }
+  }
 
   getAttachmentPath(filename: string): Promise<string> {
     if (!this.currentSession) throw new Error('No active session');
@@ -206,43 +219,43 @@ export class TableManager {
     return src;
   }
 
-    /**
-   * Get attachment file content
-   * @param fileName The name of the attachment
-   * @returns Blob of the file content
-   */
-    async getAttachmentBlob(fileName: string): Promise<Blob> {
-      if (!this.currentSession) {
-        throw new Error('No active session');
-      }
-  
-      try {
-        const filePath = await join(this.currentSession.attachmentsPath, fileName);
-        const fileContent = await readFile(filePath);
-        
-        // Convert Uint8Array to Blob
-        return new Blob([fileContent], {
-          type: this.getMimeType(fileName)
-        });
-      } catch (error) {
-        console.error('Failed to get attachment blob:', error);
-        throw error;
-      }
+  /**
+  * Get attachment file content
+  * @param fileName The name of the attachment
+  * @returns Blob of the file content
+  */
+  async getAttachmentBlob(fileName: string): Promise<Blob> {
+    if (!this.currentSession) {
+      throw new Error('No active session');
     }
-  
-    private getMimeType(fileName: string): string {
-      const ext = fileName.split('.').pop()?.toLowerCase();
-      const mimeTypes = {
-        'png': 'image/png',
-        'jpg': 'image/jpeg',
-        'jpeg': 'image/jpeg',
-        'gif': 'image/gif',
-        'pdf': 'application/pdf',
-        'doc': 'application/msword',
-        'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        // Add more mime types as needed
-      };
-      // @ts-ignore
-      return mimeTypes[ext] || 'application/octet-stream';
+
+    try {
+      const filePath = await join(this.currentSession.attachmentsPath, fileName);
+      const fileContent = await readFile(filePath);
+      
+      // Convert Uint8Array to Blob
+      return new Blob([fileContent], {
+        type: this.getMimeType(fileName)
+      });
+    } catch (error) {
+      console.error('Failed to get attachment blob:', error);
+      throw error;
     }
+  }
+
+  private getMimeType(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    const mimeTypes = {
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'gif': 'image/gif',
+      'pdf': 'application/pdf',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      // Add more mime types as needed
+    };
+    // @ts-ignore
+    return mimeTypes[ext] || 'application/octet-stream';
+  }
 }

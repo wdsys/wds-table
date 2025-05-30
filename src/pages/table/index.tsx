@@ -123,6 +123,34 @@ export default function TablePage(){
         }
     }, [path])
 
+
+    useEffect(()=>{
+        // 注册窗口关闭事件监听
+        
+        const currentWindow = getCurrentWindow();
+        let unlistenClose: (() => void) | undefined;
+
+        async function setupCloseHandler() {
+            unlistenClose = await currentWindow.onCloseRequested(async () => {
+                try {
+                    // 清理临时文件
+                    await tableManager.current?.cleanup();
+                } catch (error) {
+                    console.error('Failed to cleanup:', error);
+                }
+            });
+        }
+
+        setupCloseHandler();
+
+        // 清理函数
+        return () => {
+            if (unlistenClose) {
+                unlistenClose();
+            }
+        };
+    }, [])
+
     return (
         <ConfigProvider locale={locale}>
             <div className={styles.ctn}>
