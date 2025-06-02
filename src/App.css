@@ -42,3 +42,7 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+.ant-modal-wrap::-webkit-scrollbar {
+  display: none;
+}
