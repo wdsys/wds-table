@@ -484,7 +484,7 @@ function FileCellPanel(props, ref) {
     } else {
       setFiles([]);
     }
-  }, [cellValue]);
+  }, [panelState]);
 
   function addFile(file) {
     setRows((oldData) => {
