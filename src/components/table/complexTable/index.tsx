@@ -267,7 +267,7 @@ function renderOneColumn(props, DataTypes) {
   return tdList;
 }
 
-function renderVisibleColumns(columns, rows, options, currentPageRowUUIDs) {
+function renderVisibleColumns(columns, rows, options, currentPageRowUUIDs, tableManager) {
   const renderedColumns = [];
 
   let isFirstColumn = true;
@@ -288,6 +288,7 @@ function renderVisibleColumns(columns, rows, options, currentPageRowUUIDs) {
       rows,
       columns,
       currentPageRowUUIDs,
+      tableManager,
     }, options.DataTypes);
 
     renderedColumns.push(tdList);
@@ -548,6 +549,7 @@ function TBody(props) {
     pagerState,
     setPagerState,
     tableUUID,
+    tableManager,
   } = useContext(CellRendererContext);
 
   const {
@@ -656,7 +658,7 @@ function TBody(props) {
     DataTypes,
   };
 
-  const renderedColumns = renderVisibleColumns(columns, rows, renderOptions, currentPageRowUUIDs);
+  const renderedColumns = renderVisibleColumns(columns, rows, renderOptions, currentPageRowUUIDs, tableManager);
 
   // const t2 = new Date().getTime();
   // console.log('t2-t1:', t2-t1);

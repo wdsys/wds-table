@@ -374,15 +374,17 @@ function renderOneColumn(props) {
     isFirstColumn,
     rows,
     currentPageRowUUIDs,
+    tableManager,
   } = props;
 
   const tdList = [];
-
+  tableManager?.resetAttachmentRefs?.();
   for (let i = 0; i < rows.length; i += 1) {
+    const row = rows[i];
+    const cellValue = row?.fields?.[col?.uuid];
+
     if(currentPageRowUUIDs.has(rows[i].uuid)){
       const key = `${i}-${colIndex}`;
-      const row = rows[i];
-      const cellValue = row?.fields?.[col?.uuid];
       const cellStyle = row?.styles?.[col?.uuid] || {};
   
       const props1 = {
@@ -399,6 +401,14 @@ function renderOneColumn(props) {
   
       const td = <FileCell key={key} {...props1} />;
       tdList.push(td);
+    }
+
+    if(cellValue?.length){
+      for(const v of cellValue){
+        if(v?.uuid && v?.name){
+          tableManager?.registerAttachment?.(`${v.uuid}-${v.name}`)
+        }
+      }
     }
   }
 

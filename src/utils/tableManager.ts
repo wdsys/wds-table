@@ -15,6 +15,8 @@ export interface TableSession {
 export class TableManager {
   private currentSession: TableSession | null = null;
   private static tempDirName = 'wds-table-temp';
+  private attachmentRefs: Set<string> = new Set();
+  private columnAttachments: Set<string> = new Set();
 
   async createSession(originalFile: string): Promise<TableSession> {
     // Create unique session ID
@@ -84,10 +86,12 @@ export class TableManager {
     if (attachmentsFolder) {
       const files = await readDir(this.currentSession.attachmentsPath);
       for (const file of files) {
-        const content = await readFile(
-          await join(this.currentSession.attachmentsPath, file.name)
-        );
-        attachmentsFolder.file(file.name, content);
+        if(this.attachmentRefs.has(file.name) || this.columnAttachments.has(file.name)){
+          const content = await readFile(
+            await join(this.currentSession.attachmentsPath, file.name)
+          );
+          attachmentsFolder.file(file.name, content);
+        }
       }
     }
 
@@ -142,6 +146,20 @@ export class TableManager {
   async updateTableData(data: any): Promise<void> {
     if (!this.currentSession) throw new Error('No active session');
     const encoder = new TextEncoder();
+    const {columns} = data;
+    this.columnAttachments.clear();
+    if(Array.isArray(columns)){
+      for(const col of columns){
+        if(Array.isArray(col?.explainInfo)){
+          for(const item of col.explainInfo){
+            if(item.explainFile){
+              this.columnAttachments.add(`${item.explainFile.uuid}-${item.explainFile.name}`)
+            }
+          }
+        }
+      }
+    }
+
     const content = encoder.encode(JSON.stringify(data, null, 2));
 
     await writeFile(this.currentSession.dataPath, content);
@@ -188,6 +206,14 @@ export class TableManager {
       console.error('Failed to upload attachment:', error);
       throw error;
     }
+  }
+
+  resetAttachmentRefs():void{
+    this.attachmentRefs.clear();
+  }
+
+  registerAttachment(fileName: string):void{
+    this.attachmentRefs.add(fileName);
   }
     
   /**
