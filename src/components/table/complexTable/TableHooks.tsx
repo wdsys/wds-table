@@ -1057,18 +1057,19 @@ export function useMoveSelectedRows() {
   // lockStateRef.current = lockState;
 
   function onMoveLeft() {
-    if (optionsRef.current.lockFullTable) {
-      message.error('当前表格已被锁定，无法移动');
-      return;
-    }
+    // if (optionsRef.current.lockFullTable) {
+    //   message.error('当前表格已被锁定，无法移动');
+    //   return;
+    // }
 
     setRows((oldData) => {
       const treeNodeColumn = utils.getTreeNodeColumn(columnsRef.current);
+      const rowIndexColumn = columnsRef.current?.find?.(c=>c?.dataType === 'rowIndex');
       if (!treeNodeColumn) {
         return oldData;
       }
 
-      const selectedRows = utils.getSelectedRows(oldData, treeNodeColumn).filter((r) => !r.locked);
+      const selectedRows = utils.getSelectedRows(oldData, rowIndexColumn).filter((r) => !r.locked);
       if (selectedRows.length === 0) {
         return oldData;
       }
@@ -1109,18 +1110,19 @@ export function useMoveSelectedRows() {
   }
 
   function onMoveRight() {
-    if (optionsRef.current.lockFullTable) {
-      message.error('当前表格已被锁定，无法移动');
-      return;
-    }
+    // if (optionsRef.current.lockFullTable) {
+    //   message.error('当前表格已被锁定，无法移动');
+    //   return;
+    // }
 
     setRows((oldData) => {
       const treeNodeColumn = utils.getTreeNodeColumn(columnsRef.current);
+      const rowIndexColumn = columnsRef.current?.find?.(c=>c?.dataType === 'rowIndex');
       if (!treeNodeColumn) {
         return oldData;
       }
 
-      const selectedRows = utils.getSelectedRows(oldData, treeNodeColumn).filter((r) => !r.locked);
+      const selectedRows = utils.getSelectedRows(oldData, rowIndexColumn).filter((r) => !r.locked);
       if (selectedRows.length === 0) {
         return oldData;
       }
