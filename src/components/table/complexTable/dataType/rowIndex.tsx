@@ -107,8 +107,8 @@ const RowIndexCell = React.memo((props) => {
       {
         onPage
         && (
-          <div className="cell-view-rowIndex">
-            <div className="checkbox">
+          <div className={`cell-view-rowIndex  ${value?.checked && 'checked'}`} >
+            <div className='checkbox'>
               <Checkbox checked={value?.checked} onChange={onChangeCheckbox}/>
             </div>
             <div className='rowIndex'>{value.index}</div>

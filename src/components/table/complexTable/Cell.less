@@ -19,6 +19,7 @@
   .checkbox {
     display: none;
   }
+
   &:hover {
     .checkbox {
       display: block;
@@ -28,6 +29,14 @@
     .rowIndex {
       display: none;
     }
+  }
+
+  &.checked .checkbox {
+    display: block;
+  }
+
+  &.checked .rowIndex {
+    display: none;
   }
 }
 
