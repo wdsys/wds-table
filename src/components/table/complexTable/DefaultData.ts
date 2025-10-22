@@ -14,7 +14,7 @@ export const DefaultData = {
       "width": 60
     },
     {
-      name: '标题',
+      name: 'Title',
       dataType: 'treeNode',
       width: 150,
     },

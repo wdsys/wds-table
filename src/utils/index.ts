@@ -44,7 +44,7 @@ export function generateDefaultTableData(){
             },
             columns: [
               {
-                name: '标题',
+                name: 'Title',
                 dataType: 'treeNode',
                 width: 150,
                 uuid: uuidv4()
@@ -59,7 +59,7 @@ const CONFIG_FILE = "config.json"
 
 const defaultConfig = {
   appearance: "light",
-  language: "zhCN",
+  language: "enUS",
   autoUpdate: "auto",
 }
 

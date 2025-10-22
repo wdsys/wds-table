@@ -417,7 +417,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'file',
-  nameCN: '媒体或文件',
+  nameCN: 'Media or File',
   icon: icons.IconFile,
   valueToClipboardString,
   valueFromClipboardString,

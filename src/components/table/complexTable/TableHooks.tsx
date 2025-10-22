@@ -224,7 +224,7 @@ export function useManualSaver() {
     const loadingMessageKey = uuidv4();
 
     message.loading({
-      content: '正在保存表格数据',
+      content: 'Saving ...',
       duration: 0,
       key: loadingMessageKey,
     });
@@ -241,9 +241,9 @@ export function useManualSaver() {
     message.destroy(loadingMessageKey);
 
     if (results[0].status === 'fulfilled') {
-      message.success('保存成功');
+      message.success('Save Successfully!');
     } else { // 'rejected'
-      const content = `保存失败: ${results[0].reason}`;
+      const content = `Save failed: ${results[0].reason}`;
       console.error(content);
       message.error(content);
     }

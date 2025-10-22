@@ -298,6 +298,7 @@ function NewLineButton(){
 
   const { setRows, columns, options, pagerState, rows,
     setPagerState } = useContext(CellRendererContext);
+  const {t} = useTranslation();
 
   async function onClick(){
 
@@ -352,7 +353,7 @@ function NewLineButton(){
   <div className="table-tool-button" style={{color: '#1890ff'}} onClick={onClick}>
     <a>
       <icons.IconAdd/>
-      <span className="text" style={{color: '#1890ff'}}>添加记录</span>
+      <span className="text" style={{color: '#1890ff'}}>{t('add.record')}</span>
     </a>
   </div>
   )
@@ -388,12 +389,13 @@ function BackAndForword(){
 }
 
 function PatchAction(){
+  const {t} = useTranslation();
   return (
     <DropdownButton target='PatchActionsPanel' placement='bottom'>
       <div className="table-tool-button">
         <a>
           <span className="icon"><icons.IconPatchSelect/></span>
-          <span className="text">批量选择</span>
+          <span className="text">{t('patch.select.all')}</span>
         </a>
       </div>
     </DropdownButton>
@@ -401,12 +403,13 @@ function PatchAction(){
 }
 
 function LevelChanger(){
+  const {t} = useTranslation();
   return (
     <DropdownButton target='LevelChangePanel' placement='bottom'>
       <div className="table-tool-button">
         <a>
         <span className="icon"><icons.IconLevelChanger/></span>
-          <span className="text">层级</span>
+          <span className="text">{t('level')}</span>
         </a>
       </div>
     </DropdownButton>

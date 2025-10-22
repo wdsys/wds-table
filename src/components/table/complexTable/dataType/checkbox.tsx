@@ -183,7 +183,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'checkbox',
-  nameCN: '勾选框',
+  nameCN: 'Checkbox',
   icon: IconCheckbox,
   valueToClipboardString,
   valueFromClipboardString,

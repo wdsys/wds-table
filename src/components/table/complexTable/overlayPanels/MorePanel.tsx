@@ -598,7 +598,7 @@ function MorePanel(props, ref) {
   }
 
   async function onClickRemoveAllRows() {
-    if (!(await confirm('确定要删除所有行吗？'))) {
+    if (!(await confirm(t('delete.all.row.confirm')))) {
       return;
     }
       setRows([]);

@@ -23,6 +23,7 @@ import * as utils from '../utils';
 
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
+import { useTranslation } from 'react-i18next';
 
 function RowDrawer(props) {
   const { row } = props;
@@ -63,6 +64,7 @@ function RowPanel(props, ref) {
     setRows,
     tableInfo,
   } = useContext(CellRendererContext);
+  const { t } = useTranslation();
 
   const userId = localStorage.getItem('userid');
 
@@ -347,7 +349,7 @@ function RowPanel(props, ref) {
   }
 
   async function onClickDelete() {
-    if (!(await confirm('确定要删除此行吗？'))) {
+    if (!(await confirm(t('delete.row.confirm')))) {
       return;
     }
 
@@ -551,10 +553,10 @@ function RowPanel(props, ref) {
           && (
             <div className="two-buttons">
               <div className="button" onClick={onClickInsertAbove}>
-                向上插入行
+                {t('insert.up')}
               </div>
               <div className="button" onClick={onClickInsertBelow}>
-                向下插入行
+                {t('insert.down')}
               </div>
             </div>
           )
@@ -567,11 +569,11 @@ function RowPanel(props, ref) {
             <div className="two-buttons">
               <div className="button" onClick={onClickMoveLeft}>
                 {/* 向左移动 */}
-                升级
+                {t('upgrade')}
               </div>
               <div className="button" onClick={onClickMoveRight}>
                 {/* 向右移动 */}
-                降级
+                {t('degrade')}
               </div>
             </div>
           )
@@ -605,7 +607,7 @@ function RowPanel(props, ref) {
               <icons.IconCopy />
             </div>
             <div className="name">
-              复制到剪贴板
+              {t('copy')}
             </div>
           </div>
 
@@ -617,7 +619,7 @@ function RowPanel(props, ref) {
                   <icons.IconCopy />
                 </div>
                 <div className="name">
-                  粘贴自剪贴板
+                  {t('paste')}
                 </div>
               </div>
             )
@@ -631,7 +633,7 @@ function RowPanel(props, ref) {
                   <icons.IconMoveToHere />
                 </div>
                 <div className="name">
-                  移动选中行到此位置
+                  {t('move.selected.to.here')}
                 </div>
               </div>
             )
@@ -645,7 +647,7 @@ function RowPanel(props, ref) {
                   <icons.IconCheckbox />
                 </div>
                 <div className="name">
-                  批量操作
+                  {t('patch.action')}
                 </div>
                 <div className="right-icon">
                   <icons.IconRight />
@@ -693,7 +695,7 @@ function RowPanel(props, ref) {
                   <icons.IconCopy />
                 </div>
                 <div className="name">
-                  克隆此行
+                  {t('duplicate')}
                 </div>
               </div>
             )
@@ -707,7 +709,7 @@ function RowPanel(props, ref) {
                   <icons.IconDelete />
                 </div>
                 <div className="name">
-                  删除此行
+                  {t('delete.row')}
                 </div>
               </div>
             )

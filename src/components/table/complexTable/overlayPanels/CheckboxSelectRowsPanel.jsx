@@ -16,11 +16,14 @@ import * as icons from '../SvgIcons';
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 import filterRow from '../RowFilter';
+import { useTranslation } from 'react-i18next';
 
 function CheckboxSelectRowsPanel(props, ref) {
   const {
     columns, setRows, options, rows,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const [panelState, setPanelState] = useState({
     visible: false,
@@ -246,20 +249,20 @@ function CheckboxSelectRowsPanel(props, ref) {
         <div className="button-list">
           <div className="one-button" onClick={onClickSelectTopAll}>
             <span className="icon"><icons.IconCheckbox /></span>
-            <span className="name">向上选择所有行</span>
+            <span className="name">{t('select.above')}</span>
           </div>
           <div className="one-button" onClick={onClickSelectTopNone}>
             <span className="icon"><icons.IconCheckboxEmpty /></span>
-            <span className="name">向上取消选择</span>
+            <span className="name">{t('unselect.above')}</span>
           </div>
           <Divider />
           <div className="one-button" onClick={onClickSelectBottomAll}>
             <span className="icon"><icons.IconCheckbox /></span>
-            <span className="name">向下选择所有行</span>
+            <span className="name">{t('select.below')}</span>
           </div>
           <div className="one-button" onClick={onClickSelectBottomNone}>
             <span className="icon"><icons.IconCheckboxEmpty /></span>
-            <span className="name">向下取消选择</span>
+            <span className="name">{t('unselect.below')}</span>
           </div>
         </div>
       </div>

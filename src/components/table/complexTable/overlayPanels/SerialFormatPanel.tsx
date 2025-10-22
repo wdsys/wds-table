@@ -116,7 +116,7 @@ function SerialFormatPanel(props, ref) {
       <div className="overlay-serialFormatPanel">
         <div ref={refInput} className="input-text">
           <HanziInput
-            placeholder="请输入"
+            placeholder="Enter"
             onChange={onChangeFilter}
             value={currentColumn?.format}
           />

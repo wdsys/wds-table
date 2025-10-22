@@ -37,6 +37,7 @@ import OverlayPanelBox from './OverlayPanelBox';
 import OverlayColorPicker from './OverlayColorPicker';
 
 import pasteTableRectFromClipboard from '../pasteTableRectFromClipboard';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 弹出对话框面板：相关需求
@@ -163,7 +164,7 @@ function RelatedRequirementsModal(props) {
 
   function getName(n) {
     if (!n) return '';
-    return reqNames.get(n) || '未命名';
+    return reqNames.get(n) || 'Unamed';
   }
 
   const itemElems = [];
@@ -252,7 +253,7 @@ function HyperLinkModal(props) {
   }
 
   function onClickAdd() {
-    setItems((oldItems) => [...oldItems, { url: '', name: '未命名' }]);
+    setItems((oldItems) => [...oldItems, { url: '', name: 'Unamed' }]);
   }
 
   async function onClickPaste(index, item) {
@@ -322,16 +323,16 @@ function HyperLinkModal(props) {
 
     const elem = (
       <div key={i} style={{ marginBottom: '10px' }}>
-        <span style={{ display: 'inline-block', marginRight: 8 }}>链接</span>
-        <Input value={item.url} style={{ width: '300px' }} onChange={(e) => onChangeItem(e.target.value, i, 'url')} />
-        <span style={{ display: 'inline-block', margin: '0 8px' }}>名称</span>
+        <span style={{ display: 'inline-block', marginRight: 8 }}>Link</span>
+        <Input value={item.url} style={{ width: '270px' }} onChange={(e) => onChangeItem(e.target.value, i, 'url')} />
+        <span style={{ display: 'inline-block', margin: '0 8px' }}>Name</span>
         <Input value={item.name} style={{ width: '150px' }} onChange={(e) => onChangeItem(e.target.value, i, 'name')} />
         <Button
           style={{ marginLeft: '10px' }}
           onClick={(e) => onClickPaste(i, item)}
-          title="从剪贴板粘贴"
+          title="paste"
         >
-          粘贴
+          Paste
         </Button>
 
         <Button
@@ -339,7 +340,7 @@ function HyperLinkModal(props) {
           onClick={(e) => onClickRemoveItem(i, item)}
           title="移除这个链接"
         >
-          移除
+          Reomove
         </Button>
       </div>
     );
@@ -349,7 +350,7 @@ function HyperLinkModal(props) {
 
   return (
     <Modal
-      title="超链接"
+      title="Hyperlink"
       width={730}
       open={isModalVisible}
       onOk={handleOk}
@@ -361,7 +362,7 @@ function HyperLinkModal(props) {
 
       <div>
         <Button type="primary" block onClick={onClickAdd}>
-          添加
+          Add
         </Button>
       </div>
     </Modal>
@@ -549,7 +550,7 @@ function ViewLinksModal(props) {
           onClick={(e) => onClickPaste(i, item)}
           title="从剪贴板粘贴"
         >
-          粘贴
+          Paste
         </Button>
 
         <Button
@@ -557,7 +558,7 @@ function ViewLinksModal(props) {
           onClick={(e) => onClickRemoveItem(i, item)}
           title="移除这个链接"
         >
-          移除
+          Remove
         </Button>
       </div>
     );
@@ -578,7 +579,7 @@ function ViewLinksModal(props) {
 
       <div>
         <Button type="primary" block onClick={onClickAdd}>
-          添加
+          Add
         </Button>
       </div>
     </Modal>
@@ -688,13 +689,15 @@ function ButtonEditRelatedRequirements(props) {
     onClick,
   } = props;
 
+  const { t } = useTranslation();
+
   return (
     <div className="one-button" onClick={onClick}>
       <div className="icon">
         <icons.IconConfig />
       </div>
       <div className="name">
-        编辑链接
+        {t('edit.link')}
       </div>
     </div>
   );
@@ -702,6 +705,7 @@ function ButtonEditRelatedRequirements(props) {
 
 function ButtonEditHyperLink(props) {
   const { onClick } = props;
+  const { t } = useTranslation();
 
   return (
     <div className="one-button" onClick={onClick}>
@@ -709,7 +713,7 @@ function ButtonEditHyperLink(props) {
         <icons.IconConfig />
       </div>
       <div className="name">
-        编辑链接
+        {t('edit.link')}
       </div>
     </div>
   );
@@ -720,13 +724,15 @@ function ButtonEditViewLinks(props) {
     onClick,
   } = props;
 
+  const { t } = useTranslation();
+
   return (
     <div className="one-button" onClick={onClick}>
       <div className="icon">
         <icons.IconConfig />
       </div>
       <div className="name">
-        编辑
+        {t('edit')}
       </div>
     </div>
   );
@@ -818,6 +824,8 @@ function CellPanel(props, ref) {
     setRows,
     treeNodeSpace,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const [panelState, setPanelState] = useState({
     visible: false,
@@ -1474,7 +1482,7 @@ function CellPanel(props, ref) {
           <icons.IconConfig />
         </div>
         <div className="name">
-          设为此列默认值
+          {t('set.col.default')}
         </div>
       </div>
     );
@@ -1492,7 +1500,7 @@ function CellPanel(props, ref) {
           <icons.IconDelete />
         </div>
         <div className="name">
-          清空此列默认值
+          {t('clear.col.default')}
         </div>
       </div>
     );
@@ -1510,7 +1518,7 @@ function CellPanel(props, ref) {
           <icons.IconCopy />
         </div>
         <div className="name">
-          复制单元格
+          {t('copy')}
         </div>
       </div>
     );
@@ -1529,7 +1537,7 @@ function CellPanel(props, ref) {
           <icons.IconCopy />
         </div>
         <div className="name">
-          粘贴单元格
+          {t('paste')}
         </div>
       </div>
     );
@@ -1548,7 +1556,7 @@ function CellPanel(props, ref) {
           <icons.IconFormatPainter />
         </div>
         <div className="name">
-          清空单元格
+          {t('clear')}
         </div>
       </div>
     );
@@ -1575,7 +1583,7 @@ function CellPanel(props, ref) {
               width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             }}
             >
-              <span>颜色</span>
+              <span>{t('colors')}</span>
               <RightOutlined style={{ float: 'right', marginTop: '2px' }} />
             </div>
           </div>
@@ -1597,7 +1605,7 @@ function CellPanel(props, ref) {
           <icons.IconClearBgColor />
         </div>
         <div className="name">
-          清空此列背景色
+          {t('clear.col.bg')}
         </div>
       </div>
     );

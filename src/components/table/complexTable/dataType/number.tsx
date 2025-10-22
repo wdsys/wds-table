@@ -251,7 +251,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'number',
-  nameCN: '数值',
+  nameCN: 'Number',
   icon: IconPercent,
   valueToClipboardString,
   valueFromClipboardString,

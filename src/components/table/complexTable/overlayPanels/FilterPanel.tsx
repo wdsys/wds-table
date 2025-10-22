@@ -31,18 +31,18 @@ import OverlayPanelBox from './OverlayPanelBox';
 const TreeNodeFilterDefault = {
   operators: [
     // for cell.level
-    { id: 'levelLT', name: '深度<' },
-    { id: 'levelEqual', name: '深度=' },
-    { id: 'levelGT', name: '深度>' },
+    { id: 'levelLT', name: 'deep<' },
+    { id: 'levelEqual', name: 'deep=' },
+    { id: 'levelGT', name: 'deep>' },
     // for cell.text
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'equal', name: '等于' },
-    { id: 'notEqual', name: '不等于' },
-    { id: 'startsWith', name: '开头为' },
-    { id: 'endsWith', name: '结尾为' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'equal', name: 'equal' },
+    { id: 'notEqual', name: 'notEqual' },
+    { id: 'startsWith', name: 'startsWith' },
+    { id: 'endsWith', name: 'endsWith' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -51,14 +51,14 @@ const TreeNodeFilterDefault = {
 // text, hyperlink, email, phone
 const TextFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'equal', name: '等于' },
-    { id: 'notEqual', name: '不等于' },
-    { id: 'startsWith', name: '开头为' },
-    { id: 'endsWith', name: '结尾为' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'equal', name: 'equal' },
+    { id: 'notEqual', name: 'notEqual' },
+    { id: 'startsWith', name: 'startsWith' },
+    { id: 'endsWith', name: 'endsWith' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -79,7 +79,7 @@ const NumberFilterDefault = {
 
 const CheckboxFilterDefault = {
   operators: [
-    { id: 'equal', name: '等于' },
+    { id: 'equal', name: 'equal' },
   ],
   defaultOperatorId: 'equal',
   defaultOperand: false,
@@ -87,10 +87,10 @@ const CheckboxFilterDefault = {
 
 const SelectFilterDefault = {
   operators: [
-    { id: 'equal', name: '等于' },
-    { id: 'notEqual', name: '不等于' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'equal', name: 'equal' },
+    { id: 'notEqual', name: 'notEqual' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'equal',
   defaultOperand: undefined,
@@ -98,10 +98,10 @@ const SelectFilterDefault = {
 
 const MultiSelectFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -109,10 +109,10 @@ const MultiSelectFilterDefault = {
 
 const ViewsFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: '功能',
@@ -120,8 +120,8 @@ const ViewsFilterDefault = {
 
 const ViewLinksFilterDefault = {
   operators: [
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'notEmpty',
   defaultOperand: '功能',
@@ -135,8 +135,8 @@ const DateFilterDefault = {
     { id: 'gt', name: '>' },
     { id: 'le', name: '<=' },
     { id: 'ge', name: '>=' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'equal',
   defaultOperand: undefined,
@@ -144,10 +144,10 @@ const DateFilterDefault = {
 
 const PersonFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -155,10 +155,10 @@ const PersonFilterDefault = {
 
 const PeopleFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -166,10 +166,10 @@ const PeopleFilterDefault = {
 
 const FileFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -177,8 +177,8 @@ const FileFilterDefault = {
 
 const RelatedRequirementsFilterDefault = {
   operators: [
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'notEmpty',
   defaultOperand: undefined,
@@ -186,10 +186,10 @@ const RelatedRequirementsFilterDefault = {
 
 const TaskInChargerFilterDefault = {
   operators: [
-    { id: 'equal', name: '等于' },
-    { id: 'notEqual', name: '不等于' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'equal', name: 'equal' },
+    { id: 'notEqual', name: 'notEqual' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'equal',
   defaultOperand: undefined,
@@ -197,10 +197,10 @@ const TaskInChargerFilterDefault = {
 
 const TaskHolderFilterDefault = {
   operators: [
-    { id: 'include', name: '包含' },
-    { id: 'notInclude', name: '不包含' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'include', name: 'include' },
+    { id: 'notInclude', name: 'notInclude' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'include',
   defaultOperand: undefined,
@@ -208,10 +208,10 @@ const TaskHolderFilterDefault = {
 
 const TaskPriorityFilterDefault = {
   operators: [
-    { id: 'equal', name: '等于' },
-    { id: 'notEqual', name: '不等于' },
-    { id: 'empty', name: '为空' },
-    { id: 'notEmpty', name: '不为空' },
+    { id: 'equal', name: 'equal' },
+    { id: 'notEqual', name: 'notEqual' },
+    { id: 'empty', name: 'empty' },
+    { id: 'notEmpty', name: 'notEmpty' },
   ],
   defaultOperatorId: 'equal',
   defaultOperand: undefined,
@@ -327,7 +327,7 @@ function OperandTextEditor(props) {
 
   return (
     <Input
-      placeholder="字符串"
+      placeholder="string"
       defaultValue={value}
       onCompositionStart={onInputCompositionStart}
       onCompositionUpdate={onInputCompositionUpdate}
@@ -369,7 +369,7 @@ function OperandIntEditor(props) {
 
   return (
     <Input
-      placeholder="整数"
+      placeholder="Integer"
       type="number"
       step={1}
       min={0}
@@ -411,7 +411,7 @@ function OperandNumberEditor(props) {
 
   return (
     <Input
-      placeholder="数值"
+      placeholder="number"
       type="number"
       defaultValue={value}
       onChange={onNumberChange}
@@ -947,7 +947,7 @@ function FilterPanel(props, ref) {
 
         <Divider />
 
-        <div className="all-conditions">
+        <div className="all-conditions" style={{overflow: 'auto'}}>
           <FilterConditionList
             columns={columns}
             conditions={conditions}

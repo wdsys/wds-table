@@ -25,16 +25,17 @@ export default function DatePicker({ value, onReset, onOk }) {
     <div className={styles.datePicker}>
       <Calendar
         value={selectedDate}
-        formatDay={(locale, date) => date.getDate()}
-        formatShortWeekday={(locale, date) => ['日', '一', '二', '三', '四', '五', '六'][date.getDay()]}
+        locale='en-EN'
+        // formatDay={(locale, date) => date.getDate()}
+        // formatShortWeekday={(locale, date) => ['日', '一', '二', '三', '四', '五', '六'][date.getDay()]}
         onChange={(v) => { setSelectedDate(v); }}
       />
       <div className={styles.footer}>
         <button onClick={handleReset} className={styles.resetButton}>
-          清空
+          Clear
         </button>
         <button onClick={handleConfirm} className={styles.confirmButton}>
-          确定
+          OK
         </button>
       </div>
     </div>

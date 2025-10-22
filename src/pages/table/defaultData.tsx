@@ -17,7 +17,7 @@ function getDefaultData(){
             uuid: uuidv4(),
           },
           {
-            name: '标题',
+            name: 'Title',
             dataType: 'treeNode',
             width: 150,
             uuid: uuidv4(),

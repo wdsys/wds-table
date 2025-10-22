@@ -164,7 +164,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'date',
-  nameCN: '日期',
+  nameCN: 'Date',
   icon: IconDate,
   valueToClipboardString,
   valueFromClipboardString,

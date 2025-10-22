@@ -231,7 +231,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'multiSelect',
-  nameCN: '多选',
+  nameCN: 'MultiSelect',
   icon: IconSelectMultiple,
   valueToClipboardString,
   valueFromClipboardString,

@@ -8,8 +8,10 @@ import { DataTypes, ColumnIcon } from '../dataType';
 
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
+import { useTranslation } from 'react-i18next';
 
 function ColumnTypePanel(props, ref) {
+  const {t} = useTranslation();
   const [panelState, setPanelState] = useState({
     visible: false,
     placement: 'right',
@@ -21,7 +23,7 @@ function ColumnTypePanel(props, ref) {
 
   const menuData = [
     {
-      category: '普通',
+      category: t('normal'),
       contents: [
         'treeNode',
         'text',

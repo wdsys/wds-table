@@ -22,6 +22,7 @@ import * as icons from '../SvgIcons';
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 import SelectChoiceList from './SelectChoiceList';
+import { useTranslation } from 'react-i18next';
 
 function SelectionPanel(props, ref) {
   const {
@@ -31,6 +32,8 @@ function SelectionPanel(props, ref) {
     rows,
     setRows,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const [panelState, setPanelState] = useState({
     visible: false,
@@ -364,7 +367,7 @@ function SelectionPanel(props, ref) {
 
         <div className="input-box">
           <HanziInput
-            placeholder="搜索或新增选项"
+            placeholder={t('search.or.add')}
             autoFocus
             value={tagFilter}
             onKeyDown={onInputKeyDown}

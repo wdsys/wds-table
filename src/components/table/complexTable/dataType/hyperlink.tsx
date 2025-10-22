@@ -263,7 +263,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'hyperlink',
-  nameCN: '网址链接',
+  nameCN: 'HyperLink',
   icon: IconHyperlink,
   valueToClipboardString,
   valueFromClipboardString,

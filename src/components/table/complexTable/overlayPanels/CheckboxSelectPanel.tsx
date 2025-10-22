@@ -18,6 +18,7 @@ import * as icons from '../SvgIcons';
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 import filterRow from '../RowFilter';
+import { useTranslation } from 'react-i18next';
 
 function CheckboxSelectPanel(props, ref) {
   const {
@@ -33,6 +34,8 @@ function CheckboxSelectPanel(props, ref) {
   });
 
   useToggleablePanel(ref, setPanelState);
+
+  const { t } = useTranslation();
 
   let currentColumn = null;
   for (const col of columns) {
@@ -281,20 +284,20 @@ function CheckboxSelectPanel(props, ref) {
         <div className="button-list">
           <div className="one-button" onClick={onClickSelectAll}>
             <span className="icon"><icons.IconCheckbox /></span>
-            <span className="name">选择所有行</span>
+            <span className="name">{t('patch.select.all')}</span>
           </div>
           <div className="one-button" onClick={onClickSelectOthers}>
             <span className="icon"><icons.IconCheckbox /></span>
-            <span className="name">反转选择</span>
+            <span className="name">{t('select.invert')}</span>
           </div>
           <div className="one-button" onClick={onClickSelectNone}>
             <span className="icon"><icons.IconCheckboxEmpty /></span>
-            <span className="name">取消选择</span>
+            <span className="name">{t('unselect')}</span>
           </div>
           <Divider />
           <div className="one-button" onClick={onClickDeleteSelected}>
             <span className="icon"><icons.IconDelete /></span>
-            <span className="name">删除选中的行</span>
+            <span className="name">{t('patch.delete.selected')}</span>
           </div>
           {/* <div className="one-button" onClick={onClickDeleteUnselected}>
             <span className="icon"><icons.IconDelete /></span>

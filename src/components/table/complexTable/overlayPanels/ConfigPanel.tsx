@@ -392,7 +392,7 @@ function ConfigPanel(props, ref) {
 
               <div className="visible" onClick={onClickToggleAllVisibility}>
                 <Tooltip
-                  title={<span style={{ fontSize: '12px', fontWeight: 'bold' }}>隐藏所有列</span>}
+                  title={<span style={{ fontSize: '12px', fontWeight: 'bold' }}>Hidden</span>}
                   color="#333"
                   overlayInnerStyle={{
                     margin: 0, padding: '3px 8px', color: '#fff', minHeight: 0,

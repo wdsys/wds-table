@@ -508,7 +508,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'treeNode',
-  nameCN: '标题',
+  nameCN: 'Title',
   icon: IconTreeNode,
   valueToClipboardString,
   valueFromClipboardString,

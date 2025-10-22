@@ -28,6 +28,7 @@ import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
 import SelectChoiceList from './SelectChoiceList';
 import { PageContext } from '../../contexts';
+import { useTranslation } from 'react-i18next';
 
 function ColumnPanel(props, ref) {
   const {
@@ -38,6 +39,8 @@ function ColumnPanel(props, ref) {
     rows,
     setRows,
   } = useContext(CellRendererContext);
+
+  const {t} = useTranslation();
 
   const [panelState, setPanelState] = useState({
     visible: false,
@@ -843,7 +846,7 @@ function ColumnPanel(props, ref) {
   async function onClickDelete() {
     closeColumnPanel();
 
-    if (!(await confirm('确定要删除此列吗？'))) {
+    if (!(await confirm(t('delete.col.confirm')))) {
       return;
     }
 
@@ -883,7 +886,7 @@ function ColumnPanel(props, ref) {
             ref={refColumnName}
             className="column-name"
             autoComplete="off"
-            placeholder="字段名称"
+            placeholder="field name"
             readOnly={!!headLocked}
             defaultValue={currentColumn.name}
             onBlur={onBlurColumnName}
@@ -892,7 +895,7 @@ function ColumnPanel(props, ref) {
 
         <div className="column-type-editor">
           <div className="hint">
-            字段类型
+            {t('field.type')}
           </div>
           <div
             className={
@@ -923,7 +926,7 @@ function ColumnPanel(props, ref) {
           && (
             <div className="column-type-editor">
               <div className="hint">
-                选项
+                Option
               </div>
 
               <div className="choice-list">
@@ -942,7 +945,7 @@ function ColumnPanel(props, ref) {
                         <icons.IconPlus />
                       </div>
                       <div className="name">
-                        新增选项
+                        Add Option
                       </div>
                     </div>
                   )
@@ -1003,7 +1006,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconExpandCollapse />
                 </div>
                 <div className="name">
-                  折叠/展开
+                  {t('collapse&expand')}
                 </div>
                 <div className="right-icon">
                   <icons.IconRight />
@@ -1034,7 +1037,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconCheckbox />
                 </div>
                 <div className="name">
-                  批量操作
+                  {t('patch.action')}
                 </div>
                 <div className="right-icon">
                   <icons.IconRight />
@@ -1052,7 +1055,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconSerialStart />
                 </div>
                 <div className="name">
-                  起始编码
+                  Starting code
                 </div>
                 <div className="right-icon">
                   <span style={{ color: '#4B4B4B' }}>{currentColumn?.startSerialNumber || 1}</span>
@@ -1070,7 +1073,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconExplain />
                 </div>
                 <div className="name">
-                  添加说明
+                  {t('describe')}
                 </div>
               </div>
             )
@@ -1084,7 +1087,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconLeftArrow />
                 </div>
                 <div className="name">
-                  向左插入
+                  {t('insert.to.left')}
                 </div>
               </div>
             )
@@ -1098,7 +1101,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconRightArrow />
                 </div>
                 <div className="name">
-                  向右插入
+                  {t('insert.to.right')}
                 </div>
               </div>
             )
@@ -1125,7 +1128,7 @@ function ColumnPanel(props, ref) {
                         <icons.IconInvisible />
                       </div>
                       <div className="name">
-                        隐藏此列
+                        {t('hidden')}
                       </div>
                     </>
                   )}
@@ -1142,8 +1145,8 @@ function ColumnPanel(props, ref) {
                 </div>
                 <div className="name">
                   {currentColumn.fixed
-                    ? '取消固定'
-                    : '固定此列'}
+                    ? t('unpin')
+                    : t('fixed.col')}
                 </div>
               </div>
             )
@@ -1154,7 +1157,7 @@ function ColumnPanel(props, ref) {
               <icons.IconCopy />
             </div>
             <div className="name">
-              复制到剪贴板
+              {t('copy')}
             </div>
           </div>
 
@@ -1166,7 +1169,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconCopy />
                 </div>
                 <div className="name">
-                  粘贴自剪贴板
+                  {t('paste')}
                 </div>
               </div>
             )
@@ -1180,7 +1183,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconCopy />
                 </div>
                 <div className="name">
-                  克隆此列
+                  {t('duplicate')}
                 </div>
               </div>
             )
@@ -1194,7 +1197,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconFormatPainter />
                 </div>
                 <div className="name">
-                  清空此列
+                  {t('clear column')}
                 </div>
               </div>
             )
@@ -1209,7 +1212,7 @@ function ColumnPanel(props, ref) {
                   <icons.IconDelete />
                 </div>
                 <div className="name">
-                  删除此列
+                  {t('delete.col')}
                 </div>
               </div>
             )

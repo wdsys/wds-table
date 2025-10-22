@@ -55,7 +55,7 @@ export const PromptDialog = forwardRef((props, ref) => {
 
   return (
     <Modal
-      title="请确认"
+      title="Please confirm"
       maskClosable={false}
       open={isModalVisible}
       onOk={handleOk}

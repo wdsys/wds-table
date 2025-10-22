@@ -8,8 +8,10 @@ import { DataTypes, ColumnIcon } from '../dataType';
 
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
+import { useTranslation } from 'react-i18next';
 
 function PatchActionsPanel(props, ref) {
+  const { t } = useTranslation();
   const [panelState, setPanelState] = useState({
     visible: false,
     placement: 'right',
@@ -21,19 +23,19 @@ function PatchActionsPanel(props, ref) {
 
   const menuData = [
     {
-        title: '全选所有行',
+        title: t('patch.select.all'),
         key: '1',
     },
     {
-        title: '取消选中行',
+        title: t('patch.unselect'),
         key: '2',
     },
     {
-        title: '复制选中行',
+        title: t('patch.copy.selected'),
         key: '3',
     },
     {
-        title: '删除选中行',
+        title: t('patch.delete.selected'),
         key: '4',
     },
   ];

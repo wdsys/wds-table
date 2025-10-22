@@ -130,10 +130,10 @@ export default function DatePicker({ value, onReset, onOk }) {
       <div className={styles.days}>{renderDays()}</div>
       <div className={styles.footer}>
         <button onClick={handleReset} className={styles.resetButton}>
-          清空
+          Clear
         </button>
         <button onClick={handleConfirm} className={styles.confirmButton}>
-          确定
+          OK
         </button>
       </div>
     </div>

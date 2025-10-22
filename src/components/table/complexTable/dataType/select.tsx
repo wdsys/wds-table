@@ -231,7 +231,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'select',
-  nameCN: '单选',
+  nameCN: 'Select',
   icon: IconSelectSingle,
   valueToClipboardString,
   valueFromClipboardString,

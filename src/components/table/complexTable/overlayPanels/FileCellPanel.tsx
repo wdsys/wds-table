@@ -241,7 +241,7 @@ function FileList(props) {
   if (!files.length) {
     return (
       <div style={{ padding: '4px 10px', color: '#999' }}>
-        暂无文件
+        No files
       </div>
     );
   }
@@ -378,20 +378,20 @@ function FileUploader(props) {
       </div>
       <div className="hint-text">
         <div className="line-1">
-          <span>点击这里</span>
-          <span className="action-name">粘贴图片</span>
+          <span>Click Here </span>
+          <span className="action-name">to Paste</span>
         </div>
 
         {
           (utils.getOS() === 'mac'
-            && <div className="line-2">(快捷键: ⌘-V)</div>)
-          || <div className="line-2">(快捷键: Ctrl-V)</div>
+            && <div className="line-2">(⌘-V)</div>)
+          || <div className="line-2">(Ctrl-V)</div>
         }
 
         <div className="line-3">
-          <span className="button action-name" onClick={onClickSelectFile}>选择文件</span>
-          <span className="splitter">或</span>
-          <span className="action-name">拖入文件</span>
+          <span className="button action-name" onClick={onClickSelectFile}>select file</span>
+          <span className="splitter">or</span>
+          <span className="action-name">drop file</span>
         </div>
       </div>
       <div

@@ -65,11 +65,11 @@ export function generateNewColumnName(oldColumns) {
     nameSet.add(col.name);
   }
 
-  let newName = '字段名';
+  let newName = 'Field';
   let i = 0;
   while (nameSet.has(newName)) {
     i += 1;
-    newName = `字段名 ${i}`;
+    newName = `Field ${i}`;
   }
 
   return newName;

@@ -8,8 +8,10 @@ import { DataTypes, ColumnIcon } from '../dataType';
 
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
+import { useTranslation } from 'react-i18next';
 
 function LevelChangePanel(props, ref) {
+  const {t} = useTranslation()
   const [panelState, setPanelState] = useState({
     visible: false,
     placement: 'right',
@@ -21,11 +23,11 @@ function LevelChangePanel(props, ref) {
 
   const menuData = [
     {
-        title: '升级',
+        title: t('upgrade'),
         key: '1',
     },
     {
-        title: '降级',
+        title: t('degrade'),
         key: '2',
     },
   ];

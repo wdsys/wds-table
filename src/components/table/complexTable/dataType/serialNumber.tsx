@@ -236,7 +236,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'serialNumber',
-  nameCN: '编码',
+  nameCN: 'Encode',
   icon: IconSerialNum,
   valueToClipboardString,
   valueFromClipboardString,

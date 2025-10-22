@@ -278,7 +278,7 @@ function renderOneColumn(props) {
 
 const DataType = {
   name: 'text',
-  nameCN: '文本',
+  nameCN: 'Text',
   icon: IconText,
   valueToClipboardString,
   valueFromClipboardString,

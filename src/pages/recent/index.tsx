@@ -67,7 +67,7 @@ export default function Recent(){
         try {
             // 让用户选择保存位置
             const filePath = await save({
-                defaultPath: '无标题.table',
+                defaultPath: 'Untitled.table',
                 filters: [{
                     name: 'Table',
                     extensions: ['table']

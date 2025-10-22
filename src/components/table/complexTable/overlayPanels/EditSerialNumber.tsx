@@ -89,7 +89,7 @@ function EditSerialNumberPanel(props, ref) {
       <div className="overlay-choiceEditPanel">
         <div className="choice-name-editor">
           <InputNumber
-            placeholder="请输入"
+            placeholder="Enter"
             value={start}
             onChange={onChange}
             min={1}
@@ -101,7 +101,7 @@ function EditSerialNumberPanel(props, ref) {
         <Divider />
 
         <div style={{ margin: '8px 12px 5px' }}>
-          <Button type="primary" block onClick={onClickSubmit}>确定</Button>
+          <Button type="primary" block onClick={onClickSubmit}>OK</Button>
         </div>
       </div>
     </OverlayPanelBox>

@@ -220,7 +220,7 @@ function ChoiceEditPanel(props, ref) {
       <div className="overlay-choiceEditPanel">
         <div className="choice-name-editor">
           <HanziInput
-            placeholder="请输入"
+            placeholder="Enter"
             value={currentChoice?.name}
             onChange={onChangeChoiceName}
           />

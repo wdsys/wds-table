@@ -75,7 +75,7 @@ export default function TablePage(){
             items: [
                 {
                     id: 'save',
-                    text: '保存',
+                    text: 'Save',
                     action: ()=>{
                         const detail = { reason: 'manual-save' };
                         const event = new CustomEvent('saveTable', { detail });
@@ -84,7 +84,7 @@ export default function TablePage(){
                 },
                 {
                     id: 'saveAs',
-                    text: '另存为',
+                    text: 'Save as ...',
                     action: async ()=>{
                         try {
                             const filePath = await save({
@@ -99,7 +99,7 @@ export default function TablePage(){
                             }
                         } catch (error) {
                             console.error('Failed to save as:', error);
-                            await message('保存失败！', { 
+                            await message('save failed！', { 
                                 title: 'WDS-Table', 
                                 kind: 'error' 
                             });

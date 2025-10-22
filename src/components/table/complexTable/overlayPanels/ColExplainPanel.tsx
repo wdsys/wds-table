@@ -41,6 +41,7 @@ import * as utils from '../utils';
 import { previewFile, blobToJson } from '../../utils';
 
 import './ColExplainPanel.less';
+import { useTranslation } from 'react-i18next';
 
 const { TextArea } = Input;
 
@@ -167,6 +168,7 @@ function ImageInCell(props) {
 function UploadImage(props) {
   const { explainFile, setExplainFile, disabled } = props;
   const { addAttachment } = useContext(CellRendererContext);
+  const {t}=useTranslation();
 
   async function uploadFile(file) {
     const relativePath = await addAttachment(file.uuid, file.file);
@@ -247,12 +249,12 @@ function UploadImage(props) {
             <icons.IconDropFileHere />
             <div className="hint-text">
               <div className="line-1">
-                <span>点击这里</span>
-                <span className="action-name">粘贴图片</span>
+                <span>{t('click.here')}</span>
+                <span className="action-name"> {t('paste.img')}</span>
               </div>
 
               <div className="line-2">
-                <span className="button action-name" onClick={onClickSelectFile}>选择图片文件</span>
+                <span className="button action-name" onClick={onClickSelectFile}>{t('select.img.file')}</span>
               </div>
             </div>
           </div>
@@ -274,7 +276,7 @@ function UploadImage(props) {
 
 function ColExplainPanel(props, ref) {
   const { setColumns } = useContext(CellRendererContext);
-
+  const { t } = useTranslation();
   const [panelState, setPanelState] = useState({
     visible: false,
     placement: 'right',
@@ -375,10 +377,8 @@ function ColExplainPanel(props, ref) {
     <Modal
       open={panelState.visible}
       onCancel={hidePanel}
-      title={`${name}${disabled ? '' : `[${nameCN}]`} -  ${disabled ? '' : '添加'}说明`}
+      title={`${name}[${nameCN}] - ${t('description')}`}
       className="col-explain-modal"
-      cancelText="取消"
-      okText="确定"
       onOk={updateExplain}
       okButtonProps={{
         disabled,
@@ -392,7 +392,7 @@ function ColExplainPanel(props, ref) {
               // eslint-disable-next-line react/no-array-index-key
               <div className="explain-item" key={index}>
                 <TextArea
-                  placeholder="请添加说明"
+                  placeholder={t('please.add.des')}
                   style={{ marginBottom: 20 }}
                   value={item?.explainTxt}
                   onChange={(e) => { changeExplainVal(e, index); }}
@@ -405,7 +405,7 @@ function ColExplainPanel(props, ref) {
                   disabled={disabled}
                 />
                 {
-                  disabled ? null : <Button icon={<MinusOutlined />} style={{ border: '1px dashed #ccc', marginTop: 10 }} onClick={() => { deleteExplainItem(index); }}>删除说明</Button>
+                  disabled ? null : <Button icon={<MinusOutlined />} style={{ border: '1px dashed #ccc', marginTop: 10 }} onClick={() => { deleteExplainItem(index); }}>{t('delete.des')}</Button>
                 }
 
               </div>
@@ -415,7 +415,7 @@ function ColExplainPanel(props, ref) {
 
         {
           disabled ? null : (
-            <Button type="primary" style={{ marginTop: 10 }} icon={<PlusOutlined />} onClick={addExplainItem}>添加说明</Button>
+            <Button type="primary" style={{ marginTop: 10 }} icon={<PlusOutlined />} onClick={addExplainItem}>{t('add.des')}</Button>
           )
         }
       </div>

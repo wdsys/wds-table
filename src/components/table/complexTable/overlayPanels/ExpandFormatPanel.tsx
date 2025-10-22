@@ -13,17 +13,7 @@ import * as icons from '../SvgIcons';
 
 import useToggleablePanel from './useToggleablePanel';
 import OverlayPanelBox from './OverlayPanelBox';
-
-const ExpandFormats = [
-  {
-    code: 'expand',
-    nameCN: '展开',
-  },
-  {
-    code: 'collapse',
-    nameCN: '折叠',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const HasExpandDataType = ['text', 'file', 'signature', 'linkedRequirements', 'notification'];
 
@@ -32,6 +22,8 @@ function ExpandFormatsPanel(props, ref) {
     columns,
     setColumns,
   } = useContext(CellRendererContext);
+
+  const {t}=useTranslation();
 
   const [panelState, setPanelState] = useState({
     visible: false,
@@ -42,6 +34,17 @@ function ExpandFormatsPanel(props, ref) {
   });
 
   useToggleablePanel(ref, setPanelState);
+
+  const ExpandFormats = [
+  {
+    code: 'expand',
+    nameCN: t('expand'),
+  },
+  {
+    code: 'collapse',
+    nameCN: t('collapse'),
+  },
+];
 
   const refInput = useRef(null);
   const formats = ExpandFormats;

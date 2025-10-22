@@ -2,6 +2,7 @@
 import React from 'react';
 import { Popover } from 'antd';
 import './OverlayColorPicker.less';
+import { useTranslation } from 'react-i18next';
 
 const NORMALCOLORS = [
   '#ffffff', '#f1f1f1', '#dedede', '#edd9d2', '#fce1cd', '#fcf4cc',
@@ -12,6 +13,7 @@ const FLUORESCENTCOLORS = [
 ];
 
 function ColorPicker({ onSelect }) {
+  const { t } = useTranslation();
   function getColorsBlock(colors) {
     return colors.map((color) => (
       <div
@@ -22,21 +24,21 @@ function ColorPicker({ onSelect }) {
         key={color}
         onClick={() => onSelect?.(color)}
       >
-        {color === '#ffffff' ? '默认' : ''}
+        {/* {color === '#ffffff' ? '默认' : ''} */}
       </div>
     ));
   }
 
   return (
     <div className="ctn">
-      <div className="header">背景色</div>
+      <div className="header">{t('bg.color')}</div>
       <div className="colorCtn">
         {
           getColorsBlock(NORMALCOLORS)
         }
       </div>
       <div className="header">
-        荧光背景色
+        {t('fluorescent')}
       </div>
       <div className="colorCtn">
         {
