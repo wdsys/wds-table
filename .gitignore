@@ -15,7 +15,6 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
-!.vscode/extensions.json
 .idea
 *.suo
 *.ntvs*
@@ -37,6 +36,14 @@ src-tauri/target/
 *.deb
 *.rpm
 
+# Cargo
+.cargo/registry/
+.cargo/git/
+.cargo/bin/
+.cargo/config.toml
+
+
+
 # macOS
 .DS_Store
 *.pkg
@@ -44,3 +51,6 @@ src-tauri/target/
 # Windows
 Thumbs.db
 Desktop.ini
+
+# Linux
+*~
