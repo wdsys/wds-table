@@ -1,0 +1,32 @@
+# EditorConfig 是帮助跨多个编辑器和 IDE 为多个开发人员维护一致的编码样式的配置文件
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{json,jsonc}]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{ts,tsx,js,jsx}]
+indent_size = 2
+indent_style = space
+
+[*.rs]
+indent_size = 4
+indent_style = space
+
+[Makefile]
+indent_style = tab
