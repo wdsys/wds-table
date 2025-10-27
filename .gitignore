@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
@@ -16,9 +17,30 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Tauri build artifacts
+src-tauri/target/
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# macOS
+.DS_Store
+*.pkg
+
+# Windows
+Thumbs.db
+Desktop.ini

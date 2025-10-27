@@ -2,16 +2,40 @@
   "name": "wds-table",
   "private": true,
   "version": "0.1.0",
+  "description": "A cross-platform desktop table editor built with Tauri, React, and TypeScript",
   "type": "module",
+  "author": "",
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "table",
+    "editor",
+    "desktop",
+    "tauri",
+    "react",
+    "typescript",
+    "cross-platform"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauri:dev": "pnpm tauri dev",
+    "tauri:build": "pnpm tauri build",
+    "lint": "echo 'Linting not configured'",
+    "lint:fix": "echo 'Linting not configured'",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist src-tauri/target",
+    "clean:all": "pnpm clean && rm -rf node_modules src-tauri/target"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-cli": "~2.4.0",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2",
     "@tauri-apps/plugin-log": "~2",
@@ -43,7 +67,6 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "less": "^4.2.2",
-    "path": "^0.12.7",
     "typescript": "~5.6.2",
     "vite": "^6.0.3"
   }

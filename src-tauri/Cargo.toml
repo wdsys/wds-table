@@ -1,9 +1,13 @@
 [package]
 name = "wds-table"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "A cross-platform desktop table editor built with Tauri, React, and TypeScript"
+authors = ["WDS-Table Contributors"]
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/your-org/wds-table.git"
+keywords = ["table", "editor", "desktop", "tauri", "cross-platform"]
+categories = ["multimedia"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -32,5 +36,6 @@ tauri-plugin-notification = { version = "2.0.0", features = [ "windows7-compat" 
 tauri-plugin-log = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-cli = "2"
 tauri-plugin-single-instance = "2"
 
