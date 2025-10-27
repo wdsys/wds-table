@@ -1,14 +1,16 @@
-use tauri::{AppHandle, WebviewUrl};
+use std::path::PathBuf;
 use log::info;
+use tauri::{AppHandle, WebviewUrl};
 use urlencoding::encode;
 
 pub fn generate_window_label(file_path: &str) -> String {
     let mut hash: i64 = 5381;
-    
+
     for c in file_path.chars() {
-        hash = match hash.checked_shl(5)
+        hash = match hash
+            .checked_shl(5)
             .and_then(|h| h.checked_sub(hash))
-            .and_then(|h| h.checked_add(c as i64)) 
+            .and_then(|h| h.checked_add(c as i64))
         {
             Some(h) => h,
             None => {
@@ -17,11 +19,12 @@ pub fn generate_window_label(file_path: &str) -> String {
             }
         };
     }
-    
+
     format!("window_{}", hash.abs())
 }
 
-pub fn handle_file_associations(app: AppHandle, files: Vec<String>) {
+pub fn handle_file_associations(app: AppHandle, files: Vec<PathBuf>) {
+    let files: Vec<String> = files.iter().map(|p| p.display().to_string()).collect();
     info!("Received files: {:?}", files);
     if let Some(file) = files.first() {
         let encoded_path = encode(file);
@@ -33,9 +36,8 @@ pub fn handle_file_associations(app: AppHandle, files: Vec<String>) {
             .decorations(false)
             .center()
             .min_inner_size(970.0, 600.0)
-            .drag_and_drop(false)
             .resizable(true)
             .build()
-            .unwrap();   
+            .unwrap();
     }
 }

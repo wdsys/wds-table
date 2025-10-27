@@ -9,6 +9,9 @@
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
+  "plugins": {
+    "cli": {}
+  },
   "app": {
     "windows": [
       {
