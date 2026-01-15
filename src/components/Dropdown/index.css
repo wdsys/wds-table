@@ -1,0 +1,112 @@
+:root {
+  /* 定义中性变量 */
+  --ui-bg: #ffffff;
+  --ui-text: #333333;
+  --ui-border: #d1d1d1;
+  --ui-hover-bg: #cacacada; /* Windows 蓝与 Apple 蓝的折中 */
+  --ui-hover-text: #333333;
+  --ui-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --ui-radius: 4px; /* 兼容 Win11 和 Mac 的圆角 */
+}
+
+.dropdown-container {
+  position: relative;
+  display: block;
+  /* 自动适配系统字体：Mac 优先用 SF, Windows 优先用 Segoe UI */
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; */
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+  /* -webkit-font-smoothing: antialiased; */
+}
+
+/* 触发器按钮：融合了 Win 的稳重和 Mac 的简洁 */
+/* .dropdown-trigger {
+  background-color: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  padding: 5px 12px;
+  color: var(--ui-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+} */
+
+/* .dropdown-trigger:hover {
+  background-color: #f9f9f9;
+  border-color: #bbb;
+}
+
+.dropdown-trigger:active {
+  background-color: #f0f0f0;
+} */
+
+/* 下拉菜单面板 */
+.menu-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 120px;
+  background-color: var(--ui-bg);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow);
+  padding: 2px 2px;
+  margin: 0;
+  list-style: none;
+  z-index: 1000;
+  font-size: 13px;
+  /* 极轻微的缩放动画 */
+  animation: dropdown-show 0.1s ease-out;
+}
+
+@keyframes dropdown-show {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 菜单项 */
+.menu-item {
+  padding: 0px 4px;
+  height: 24px;
+  border-radius: calc(var(--ui-radius) - 1px);
+  color: var(--ui-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.1s;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.menu-item:hover {
+  background-color: var(--ui-hover-bg);
+  color: var(--ui-hover-text);
+}
+
+/* 分割线 */
+.menu-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 4px 0;
+}
+
+/* 箭头小图标 */
+.chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid #888;
+  border-bottom: 1.5px solid #888;
+  transform: rotate(45deg);
+  margin-bottom: 3px;
+  transition: transform 0.2s;
+}
+
+.active .chevron {
+  transform: rotate(-135deg);
+  margin-bottom: -3px;
+}

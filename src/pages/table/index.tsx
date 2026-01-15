@@ -8,13 +8,13 @@ import zhCN from 'antd/es/locale/zh_CN';
 import { message, save } from '@tauri-apps/plugin-dialog';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
-import { Menu, MenuItem } from '@tauri-apps/api/menu';
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
 
 import { TableManager } from '@/utils/tableManager';
 import { addRecentFile } from '@/utils/recentFiles'
 import getDefaultData from './defaultData';
+import Dropdown from '@/components/Dropdown';
 
 export default function TablePage(){
 
@@ -28,6 +28,42 @@ export default function TablePage(){
     const [data, setData] = useState(getDefaultData());
     const tableManager = useRef(new TableManager());
     const filename = path?.split?.('\\')?.pop()
+
+    const options = [
+        {
+            value: 'save',
+            label: 'Save',
+            action: ()=>{
+                const detail = { reason: 'manual-save' };
+                const event = new CustomEvent('saveTable', { detail });
+                window.dispatchEvent(event);
+            }
+        },
+        {
+            value: 'saveAs',
+            label: 'Save as ...',
+            action: async ()=>{
+                try {
+                    const filePath = await save({
+                        filters: [{
+                            name: 'WDS Table',
+                            extensions: ['table']
+                        }]
+                    });
+                    
+                    if (filePath) {
+                        await tableManager.current.saveAs(filePath);
+                    }
+                } catch (error) {
+                    console.error('Failed to save as:', error);
+                    await message('save failed！', { 
+                        title: 'WDS-Table', 
+                        kind: 'error' 
+                    });
+                }
+            }
+        }
+    ]
 
     async function getTableJson(p: string) {
         const endEvent = new CustomEvent('loadEnd');
@@ -70,45 +106,55 @@ export default function TablePage(){
         }
     }
 
-    async function showMenu(){
-        const saveMenuItem = await MenuItem.new({
-            id: 'save',
-            text: 'Save',
-            action: ()=>{
-                const detail = { reason: 'manual-save' };
-                const event = new CustomEvent('saveTable', { detail });
-                window.dispatchEvent(event);
-            }
-        })
-        const saveAsMenuItem = await MenuItem.new({
-            id: 'saveAs',
-            text: 'Save as ...',
-            action: async ()=>{
-                try {
-                    const filePath = await save({
-                        filters: [{
-                            name: 'WDS Table',
-                            extensions: ['table']
-                        }]
-                    });
-                    
-                    if (filePath) {
-                        await tableManager.current.saveAs(filePath);
-                    }
-                } catch (error) {
-                    console.error('Failed to save as:', error);
-                    await message('save failed！', { 
-                        title: 'WDS-Table', 
-                        kind: 'error' 
-                    });
-                }
-            }
-        })
-        const menu = await Menu.new({
-            items: [saveMenuItem, saveAsMenuItem]
-        })
-        menu.popup();
-    }
+    // async function showMenu(){
+    //     await initMenu();
+    //     menuRef.current?.popup?.();
+    // }
+
+    // async function initMenu(){
+    //     const menu = await Menu.new({
+    //         items: [
+    //             {
+    //                 id: 'save',
+    //                 text: 'Save',
+    //                 action: ()=>{
+    //                     const detail = { reason: 'manual-save' };
+    //                     const event = new CustomEvent('saveTable', { detail });
+    //                     window.dispatchEvent(event);
+    //                 }
+    //             },
+    //             {
+    //                 id: 'saveAs',
+    //                 text: 'Save as ...',
+    //                 action: async ()=>{
+    //                     try {
+    //                         const filePath = await save({
+    //                             filters: [{
+    //                                 name: 'WDS Table',
+    //                                 extensions: ['table']
+    //                             }]
+    //                         });
+                            
+    //                         if (filePath) {
+    //                             await tableManager.current.saveAs(filePath);
+    //                         }
+    //                     } catch (error) {
+    //                         console.error('Failed to save as:', error);
+    //                         await message('save failed！', { 
+    //                             title: 'WDS-Table', 
+    //                             kind: 'error' 
+    //                         });
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     })
+
+    //     // await menu.setAsAppMenu();
+    //     menuRef.current = menu;
+    // }
+
+
     
     useEffect(()=>{
         if(path){
@@ -140,7 +186,7 @@ export default function TablePage(){
         }
 
         setupCloseHandler();
-
+        // initMenu();
         // 清理函数
         return () => {
             if (unlistenClose) {
@@ -155,7 +201,10 @@ export default function TablePage(){
                 {/* <div className={styles.toolbar}>
                     <Toolbar />
                 </div> */}
-                <div className={styles.menu} onClick={showMenu}><TfiMenu/></div>
+
+                    <div className={styles.menu}>
+                        <Dropdown options={options}><TfiMenu/></Dropdown>
+                    </div>
                 <div className={styles.title}>{filename}</div>
                 <div className={styles.tableCtn}>
                     <Table fileData={data} filename={filename} 
