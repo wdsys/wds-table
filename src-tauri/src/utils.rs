@@ -23,8 +23,7 @@ pub fn generate_window_label(file_path: &str) -> String {
     format!("window_{}", hash.abs())
 }
 
-pub fn handle_file_associations(app: AppHandle, files: Vec<PathBuf>) {
-    let files: Vec<String> = files.iter().map(|p| p.display().to_string()).collect();
+pub fn handle_file_associations(app: AppHandle, files: Vec<String>) {
     info!("Received files: {:?}", files);
     if let Some(file) = files.first() {
         let encoded_path = encode(file);

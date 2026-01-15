@@ -8,7 +8,7 @@ import zhCN from 'antd/es/locale/zh_CN';
 import { message, save } from '@tauri-apps/plugin-dialog';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
-import {Menu} from '@tauri-apps/api/menu';
+import { Menu, MenuItem } from '@tauri-apps/api/menu';
 import styles from './index.module.less';
 import { useTranslation } from "react-i18next";
 
@@ -71,44 +71,42 @@ export default function TablePage(){
     }
 
     async function showMenu(){
-        const menu = await Menu.new({
-            items: [
-                {
-                    id: 'save',
-                    text: 'Save',
-                    action: ()=>{
-                        const detail = { reason: 'manual-save' };
-                        const event = new CustomEvent('saveTable', { detail });
-                        window.dispatchEvent(event);
-                    }
-                },
-                {
-                    id: 'saveAs',
-                    text: 'Save as ...',
-                    action: async ()=>{
-                        try {
-                            const filePath = await save({
-                                filters: [{
-                                    name: 'WDS Table',
-                                    extensions: ['table']
-                                }]
-                            });
-                            
-                            if (filePath) {
-                                await tableManager.current.saveAs(filePath);
-                            }
-                        } catch (error) {
-                            console.error('Failed to save as:', error);
-                            await message('save failed！', { 
-                                title: 'WDS-Table', 
-                                kind: 'error' 
-                            });
-                        }
-                    }
-                }
-            ]
+        const saveMenuItem = await MenuItem.new({
+            id: 'save',
+            text: 'Save',
+            action: ()=>{
+                const detail = { reason: 'manual-save' };
+                const event = new CustomEvent('saveTable', { detail });
+                window.dispatchEvent(event);
+            }
         })
-
+        const saveAsMenuItem = await MenuItem.new({
+            id: 'saveAs',
+            text: 'Save as ...',
+            action: async ()=>{
+                try {
+                    const filePath = await save({
+                        filters: [{
+                            name: 'WDS Table',
+                            extensions: ['table']
+                        }]
+                    });
+                    
+                    if (filePath) {
+                        await tableManager.current.saveAs(filePath);
+                    }
+                } catch (error) {
+                    console.error('Failed to save as:', error);
+                    await message('save failed！', { 
+                        title: 'WDS-Table', 
+                        kind: 'error' 
+                    });
+                }
+            }
+        })
+        const menu = await Menu.new({
+            items: [saveMenuItem, saveAsMenuItem]
+        })
         menu.popup();
     }
     

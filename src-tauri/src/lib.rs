@@ -150,7 +150,8 @@ pub fn run() {
                     let files = urls
                         .into_iter()
                         .filter_map(|url| url.to_file_path().ok())
-                        .collect::<Vec<_>>();
+                        .map(|path| path.to_string_lossy().into_owned())
+                        .collect::<Vec<String>>();
 
                     handle_file_associations(app.clone(), files);
                 }
